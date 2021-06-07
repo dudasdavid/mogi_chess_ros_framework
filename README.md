@@ -1,0 +1,1 @@
+# mogi_chess_ros_framework
