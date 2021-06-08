@@ -1,0 +1,6 @@
+string player
+string movement
+string fen
+bool robot
+---
+bool valid
