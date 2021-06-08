@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+
+<launch>
+  <node name="mogi_chess_manager" pkg="mogi_chess_manager" type="chess_manager.py" output ="screen"/>
+</launch>
