@@ -10,30 +10,72 @@ import fen_parser
 from mogi_chess_msgs.srv import ReadStatus, ReadStatusResponse, MakeMovement, MakeMovementResponse
 
 def calculate_robot_request(fen, move):
+    global hit_slot, hit_list
+
+    moved_piece = fen_parser.get_piece(fen, move[:2])
+    target_piece = fen_parser.get_piece(fen, move[2:4])
+    print("Piece moved:", moved_piece)
+    print("Target piece:", target_piece)
 
     # Detect if king was moved
-    moved_piece = fen_parser.get_piece(fen, move[:2])
-    print("Piece moved:", moved_piece)
     if moved_piece in "kK":
         print("King moved!")
         if move[0] == "e" and move[2] == "g":
             print("Castling happened to the king side!")
+            movement_str = f"c;{move[:2]};{move[2:4]};h{move[1]};f{move[1]}"
+            return movement_str
         if move[0] == "e" and move[2] == "c":
             print("Castling happened to the queen side!")
+            movement_str = f"c;{move[:2]};{move[2:4]};a{move[1]};d{move[1]}"
+            return movement_str
 
     # Detect promotion
-    # TODO
+    if len(move) == 5:
+        print(f"Promotion happened! Requested piece: {move[4]}, available pieces in hit list:")
+        print(hit_list)
+        # Do we need to double-check?
+        # TODO: This only works, when the piece is available in the hit list...
+        if moved_piece == "p":
+            promotion_slot = hit_list.index(move[4])
+            movement_str = f"p;{promotion_slot};{move[2:4]};{move[:2]};{promotion_slot}"
+            hit_list[promotion_slot] = "p"
+            return movement_str
+
+        elif moved_piece == "P":
+            promotion_slot = hit_list.index(move[4].upper())
+            movement_str = f"p;{promotion_slot};{move[2:4]};{move[:2]};{promotion_slot}"
+            hit_list[promotion_slot] = "P"
+            return movement_str
+
+        else:
+            print("Something wrong happened!")
+            return None
 
     # Detect en passant -- hit will happen!
-    # TODO
+    if moved_piece in "pP":
+        # TODO: can we improve en passant logic???
+        if move[0] != move[2] and target_piece == "-":
+            print("En passant happened!")
+            if moved_piece == "p":
+                movement_str = f"e;{move[:2]};{move[2:4]};{move[2]}{int(move[3])+1};{hit_slot}"
+                hit_list.append("P")
+            if moved_piece == "P":
+                movement_str = f"e;{move[:2]};{move[2:4]};{move[2]}{int(move[3])-1};{hit_slot}"
+                hit_list.append("p")
+            hit_slot += 1
+            return movement_str
 
     # Detect normal hit:
-    target_piece = fen_parser.get_piece(fen, move[2:4])
-    print("Target piece:", target_piece)
     if target_piece != "-":
         print("Hit happened!")
+        movement_str = f"x;{move[2:4]};{hit_slot};{move[:2]};{move[2:4]}"
+        hit_slot += 1
+        hit_list.append(target_piece)
+        return movement_str
 
     # If none of above, it's just a normal step
+    movement_str = f"n;{move[:2]};{move[2:4]}"
+    return movement_str
 
 def serve_movement(req):
     global current_side, point, status, current_fen, current_side, robot_is_moving
@@ -57,7 +99,8 @@ def serve_movement(req):
             if req.robot:
                 robot_is_moving = True
                 # this has to detect hits and special moves, too!
-                calculate_robot_request(previous_fen, req.movement)
+                robot_str = calculate_robot_request(previous_fen, req.movement)
+                print(robot_str)
 
             
         else:
@@ -98,6 +141,8 @@ current_side = "none"
 current_fen = "none"
 robot_is_moving = False
 robot_moving_timeout = 0
+hit_slot = 0
+hit_list = []
 
 # Set up ROS stuff
 status_pub = rospy.Publisher('chess_status', String, queue_size=1)
