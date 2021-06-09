@@ -57,6 +57,8 @@ add_service_files(
   FILES
   ReadStatus.srv
   MakeMovement.srv
+  RobotCommand.srv
+  RobotStatus.srv
 )
 
 ## Generate actions in the 'action' folder
