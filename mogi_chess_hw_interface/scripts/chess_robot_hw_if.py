@@ -49,7 +49,12 @@ class MoveGroupPythonInteface(object):
     ## First initialize `moveit_commander`_ and a `rospy`_ node:
     moveit_commander.roscpp_initialize(sys.argv)
     rospy.init_node('move_group_python_interface', anonymous=True)
-    self.simulation = False
+
+    param_sim = rospy.get_param('~sim', "false")
+    if param_sim == True:
+        self.simulation = True
+    else:
+        self.simulation = False
 
     ## Instantiate a `RobotCommander`_ object. Provides information such as the robot's
     ## kinematic model and the robot's current joint states
@@ -180,8 +185,8 @@ class MoveGroupPythonInteface(object):
     print(self.drop_slots)
 
     if self.simulation:
-        self.wait_time = 0.5
-        self.gripper_wait_time = 3
+        self.wait_time = 0.2
+        self.gripper_wait_time = 1
     else:
         self.wait_time = 0.2
         self.gripper_wait_time = 0.5
@@ -330,7 +335,7 @@ class MoveGroupPythonInteface(object):
             pass
             #rospy.loginfo("Unknown collision!")
         
-        if time.time() > (self.detach_time + 5) and self.attached == False and self.right_collider is not None and self.right_collider == self.left_collider:
+        if rospy.get_time() > (self.detach_time + 5) and self.attached == False and self.right_collider is not None and self.right_collider == self.left_collider:
             self.attached = True
             self.attached_to = self.right_collider
             req = AttachRequest()
@@ -360,7 +365,7 @@ class MoveGroupPythonInteface(object):
               req.model_name_2 = self.attached_to
               req.link_name_2 = "link_0"
 
-              self.detach_time = time.time()
+              self.detach_time = rospy.get_time()
               self.detach_srv.call(req)
               rospy.loginfo("Detached: %s!" % self.attached_to)
               self.attached = False
@@ -397,19 +402,19 @@ class MoveGroupPythonInteface(object):
 
     # 1.1) Go above end position
     self.go_to_pose_goal(x, y, self.z_high, orientation)
-    time.sleep(self.wait_time)
+    rospy.sleep(self.wait_time)
 
     # 1.2) Go down
     self.go_to_pose_goal(x, y, self.z_low, orientation)
-    time.sleep(self.wait_time)
+    rospy.sleep(self.wait_time)
 
     # 1.3) Grab the figure
     self.set_gripper("closed")
-    time.sleep(self.gripper_wait_time)
+    rospy.sleep(self.gripper_wait_time)
 
     # 1.4) Move up
     self.go_to_pose_goal(x, y, self.z_high, orientation)
-    time.sleep(self.wait_time)
+    rospy.sleep(self.wait_time)
 
   def go_and_drop(self, xy, out = False):
 
@@ -425,19 +430,19 @@ class MoveGroupPythonInteface(object):
 
     # 6) Go above end position
     self.go_to_pose_goal(x, y, self.z_high, orientation)
-    time.sleep(self.wait_time)
+    rospy.sleep(self.wait_time)
 
     # 7) Move down
     self.go_to_pose_goal(x, y, z_drop, orientation)
-    time.sleep(self.wait_time)
+    rospy.sleep(self.wait_time)
 
     # 8) Open gripper
     self.set_gripper("open")
-    time.sleep(self.gripper_wait_time)
+    rospy.sleep(self.gripper_wait_time)
 
     # 9) Move up
     self.go_to_pose_goal(x, y, self.z_high, orientation)
-    time.sleep(self.wait_time)
+    rospy.sleep(self.wait_time)
 
   def push_the_clock(self, side):
 
@@ -452,15 +457,15 @@ class MoveGroupPythonInteface(object):
 
     # 6) Go above end position
     self.go_to_pose_goal(clock_x, clock_y, self.clock_z_up, 90)
-    time.sleep(self.wait_time)
+    rospy.sleep(self.wait_time)
 
     # 7) Move down
     self.go_to_pose_goal(clock_x, clock_y, self.clock_z_down, 90)
-    time.sleep(self.wait_time)
+    rospy.sleep(self.wait_time)
 
     # 9) Move up
     self.go_to_pose_goal(clock_x, clock_y, self.clock_z_up, 90)
-    time.sleep(self.wait_time)
+    rospy.sleep(self.wait_time)
 
   # Obsolete
   def do_chess_step(self, start, end, hit=False):
@@ -479,74 +484,74 @@ class MoveGroupPythonInteface(object):
       if hit:
         # 1.1) Go above end position
         self.go_to_pose_goal(self.columns[end[0]], self.rows[end[1]], self.z_high)
-        time.sleep(wait_time)
+        rospy.sleep(wait_time)
 
         # 1.2) Go down
         self.go_to_pose_goal(self.columns[end[0]], self.rows[end[1]], self.z_low)
-        time.sleep(wait_time)
+        rospy.sleep(wait_time)
 
         # 1.3) Grab the figure
         self.set_gripper("closed")
-        time.sleep(gripper_wait_time)
+        rospy.sleep(gripper_wait_time)
 
         # 1.4) Move up
         self.go_to_pose_goal(self.columns[end[0]], self.rows[end[1]], self.z_high)
-        time.sleep(wait_time)
+        rospy.sleep(wait_time)
 
         # 1.5) Go out of the chess table
         self.go_to_pose_goal(self.x_drop_to_table, self.y_drop_to_table, self.z_high, orientation = 90)
-        time.sleep(wait_time)
+        rospy.sleep(wait_time)
 
         # 1.6) Go down
         self.go_to_pose_goal(self.x_drop_to_table, self.y_drop_to_table, self.z_drop_to_table, orientation = 90)
-        time.sleep(wait_time)
+        rospy.sleep(wait_time)
 
         # 1.7) Release the figure
         self.set_gripper("open")
-        time.sleep(gripper_wait_time)
+        rospy.sleep(gripper_wait_time)
 
         # 1.8) Move up
         self.go_to_pose_goal(self.x_drop_to_table, self.y_drop_to_table, self.z_high, orientation = 90)
-        time.sleep(wait_time)
+        rospy.sleep(wait_time)
 
         # 1.9) Set nex drop X and Y coordinates
 
 
       # 2) Go above start position
       self.go_to_pose_goal(self.columns[start[0]], self.rows[start[1]], self.z_high)
-      time.sleep(wait_time)
+      rospy.sleep(wait_time)
 
       # 3) Go down
       self.go_to_pose_goal(self.columns[start[0]], self.rows[start[1]], self.z_low)
-      time.sleep(wait_time)
+      rospy.sleep(wait_time)
 
       # 4) Grab the figure
       self.set_gripper("closed")
-      time.sleep(gripper_wait_time)
+      rospy.sleep(gripper_wait_time)
 
       # 5) Move up
       self.go_to_pose_goal(self.columns[start[0]], self.rows[start[1]], self.z_high)
-      time.sleep(wait_time)
+      rospy.sleep(wait_time)
 
       # 6) Go above end position
       self.go_to_pose_goal(self.columns[end[0]], self.rows[end[1]], self.z_high)
-      time.sleep(wait_time)
+      rospy.sleep(wait_time)
 
       # 7) Move down
       self.go_to_pose_goal(self.columns[end[0]], self.rows[end[1]], self.z_drop)
-      time.sleep(wait_time)
+      rospy.sleep(wait_time)
 
       # 8) Open gripper
       self.set_gripper("open")
-      time.sleep(gripper_wait_time)
+      rospy.sleep(gripper_wait_time)
 
       # 9) Move up
       self.go_to_pose_goal(self.columns[end[0]], self.rows[end[1]], self.z_high)
-      time.sleep(wait_time)
+      rospy.sleep(wait_time)
 
       # 10) Go home
       self.go_to_home()
-      time.sleep(wait_time)
+      rospy.sleep(wait_time)
 
 
   def go_to_home(self):

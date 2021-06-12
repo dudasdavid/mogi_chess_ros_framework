@@ -1,5 +1,14 @@
 <?xml version="1.0"?>
 
 <launch>
+
+  <arg name="sim" default="false"/>
+
+  <!-- Launch the HW interface -->
+  <include file="$(find mogi_chess_hw_interface)/launch/robot_interface.launch">
+    <arg name="sim" value="$(arg sim)"/>
+  </include>
+
   <node name="mogi_chess_manager" pkg="mogi_chess_manager" type="chess_manager.py" output ="screen"/>
+
 </launch>
