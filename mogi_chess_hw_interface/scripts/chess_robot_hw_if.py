@@ -186,7 +186,7 @@ class MoveGroupPythonInteface(object):
 
     if self.simulation:
         self.wait_time = 0.2
-        self.gripper_wait_time = 1
+        self.gripper_wait_time = 1.5
     else:
         self.wait_time = 0.2
         self.gripper_wait_time = 0.5
