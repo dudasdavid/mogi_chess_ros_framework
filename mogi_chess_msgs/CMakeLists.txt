@@ -59,6 +59,7 @@ add_service_files(
   MakeMovement.srv
   RobotCommand.srv
   RobotStatus.srv
+  SaveFenSamples.srv
 )
 
 ## Generate actions in the 'action' folder
