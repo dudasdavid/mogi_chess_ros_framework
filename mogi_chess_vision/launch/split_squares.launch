@@ -1,0 +1,8 @@
+<launch>
+  <node name="aruco_detector" pkg="chess_detector" type="aruco_detector.py" respawn="false" output="screen">
+  </node>
+
+  <node name="split_squares" pkg="chess_detector" type="split_squares.py" respawn="false" output="screen">
+  </node>
+
+</launch>
