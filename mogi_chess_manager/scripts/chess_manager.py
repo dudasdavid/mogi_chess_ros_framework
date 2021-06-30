@@ -7,7 +7,7 @@ from stockfish import Stockfish
 import rospkg
 import time
 import fen_parser
-from mogi_chess_msgs.srv import ReadStatus, ReadStatusResponse, MakeMovement, MakeMovementResponse, RobotCommand, RobotStatus
+from mogi_chess_msgs.srv import ReadStatus, ReadStatusResponse, MakeMovement, MakeMovementResponse, RobotCommand, RobotStatus, SaveFenSamples
 
 def send_robot_command_client(command):
     rospy.wait_for_service('robot_command')
@@ -23,6 +23,15 @@ def read_robot_status_client():
     try:
         robot_status_service = rospy.ServiceProxy('robot_status', RobotStatus)
         resp1 = robot_status_service()
+        return resp1
+    except rospy.ServiceException as e:
+        print("Service call failed: %s"%e)
+
+def save_fen_samples_client(fen):
+    rospy.wait_for_service('save_fen_samples')
+    try:
+        save_fen_samples_service = rospy.ServiceProxy('save_fen_samples', SaveFenSamples)
+        resp1 = save_fen_samples_service(fen)
         return resp1
     except rospy.ServiceException as e:
         print("Service call failed: %s"%e)
@@ -147,6 +156,11 @@ def serve_read_status(req):
     global robot_is_moving, robot_moving_timeout
 
     robot_is_moving = read_robot_status_client().is_moving
+
+    print(robot_is_moving)
+    if robot_is_moving == False:
+        ret = save_fen_samples_client(current_fen)
+        print(ret)
 
     response = "%s;%s;%s;%s;%s" % (status, point, current_side, current_fen, str(robot_is_moving))
 
