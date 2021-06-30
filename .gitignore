@@ -1,2 +1,3 @@
 *.pyc
+*.zip
 mogi_chess_vision/samples/**/*.jpg
