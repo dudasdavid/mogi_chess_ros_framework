@@ -32,3 +32,7 @@ roslaunch mogi_chess_manager human_player.launch side:=w
 roslaunch mogi_chess_vision camera.launch
 roslaunch mogi_chess_vision split_and_save.launch
 roslaunch mogi_chess_manager manager.launch save:=true
+
+### Gazebo:
+roslaunch mogi_chess_manager manager.launch sim:=true save:=true
+roslaunch mogi_chess_vision split_and_save.launch sim:=true
