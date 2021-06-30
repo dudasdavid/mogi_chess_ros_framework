@@ -85,7 +85,7 @@ args = build_argparser().parse_args()
 if not args.use_sim:
     dataset = '../samples'
 else:
-    dataset = './samples_sim'
+    dataset = '../samples_sim'
 
 # initialize the data and labels
 print("[INFO] loading images...")
