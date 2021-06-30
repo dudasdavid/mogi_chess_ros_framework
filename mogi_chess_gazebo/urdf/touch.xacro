@@ -1,0 +1,33 @@
+<?xml version='1.0'?>
+
+<robot name="chess_camera" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+    <gazebo reference="rh_p12_rn_l2">
+        <sensor name="rh_p12_rn_l2" type="contact">
+          <always_on>true</always_on>
+          <update_rate>15.0</update_rate> 
+          <contact>
+            <collision>rh_p12_rn_l2_collision</collision>
+          </contact>
+          <plugin name="gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">  
+            <bumperTopicName>left_contact</bumperTopicName>
+            <frameName>world</frameName>
+          </plugin>
+        </sensor>
+    </gazebo>
+
+    <gazebo reference="rh_p12_rn_r2">
+        <sensor name="rh_p12_rn_r2" type="contact">
+          <always_on>true</always_on>
+          <update_rate>15.0</update_rate> 
+          <contact>
+            <collision>rh_p12_rn_r2_collision</collision>
+          </contact>
+          <plugin name="gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">  
+            <bumperTopicName>right_contact</bumperTopicName>
+            <frameName>world</frameName>
+          </plugin>
+        </sensor>
+    </gazebo>
+
+</robot>
