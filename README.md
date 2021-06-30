@@ -7,7 +7,7 @@
 
 ## 1. Start low level robot nodes:
 ### Bringup in Gazebo
-export GAZEBO_MODEL_PATH=~/catkin_ws/src/mogi_chess_ros_framework/mogi_chess_gazebo/models/
+export GAZEBO_MODEL_PATH=~/catkin_ws/src/mogi_chess_ros_framework/mogi_chess_gazebo/gazebo_models/
 roslaunch ur_e_gazebo ur3e.launch limited:=true world_file:='$(find mogi_chess_gazebo)/world/chessboard.world' z:=1.02
 roslaunch ur3_e_moveit_config ur3_e_moveit_planning_execution.launch sim:=true limited:=true
 
@@ -27,3 +27,8 @@ roslaunch mogi_chess_manager stockfish_player.launch side:=b
 roslaunch mogi_chess_manager stockfish_player.launch side:=w
 or
 roslaunch mogi_chess_manager human_player.launch side:=w
+
+## 3. Start vision package and save samples
+roslaunch mogi_chess_vision camera.launch
+roslaunch mogi_chess_vision split_and_save.launch
+roslaunch mogi_chess_manager manager.launch save:=true
