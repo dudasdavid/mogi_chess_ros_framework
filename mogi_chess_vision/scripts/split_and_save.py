@@ -36,7 +36,6 @@ square_margin = 50
 rospack = rospkg.RosPack()
 
 path = rospack.get_path('mogi_chess_vision')
-save_path = path + "/samples/"
 
 class BufferQueue(Queue):
     """Slight modification of the standard Queue that discards the oldest item
@@ -143,6 +142,11 @@ bridge = CvBridge()
 rospy.init_node('detect_pieces')
 # Define your image topic
 image_topic = "/chessboard_image/color/image_raw"
+param_sim = rospy.get_param('~sim', "false")
+if param_sim:
+    save_path = path + "/samples_sim/"
+else:
+    save_path = path + "/samples/"
 
 rospy.Subscriber(image_topic, Image, queueMonocular)
 
