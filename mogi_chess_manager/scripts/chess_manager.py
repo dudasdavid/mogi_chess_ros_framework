@@ -157,8 +157,7 @@ def serve_read_status(req):
 
     robot_is_moving = read_robot_status_client().is_moving
 
-    print(robot_is_moving)
-    if robot_is_moving == False:
+    if robot_is_moving == False and param_save:
         ret = save_fen_samples_client(current_fen)
         print(ret)
 
@@ -182,6 +181,8 @@ status_pub = rospy.Publisher('chess_status', String, queue_size=1)
 s_read = rospy.Service('read_status', ReadStatus, serve_read_status)
 s_move = rospy.Service('make_movement', MakeMovement, serve_movement)
 rospy.init_node('chess_manager')
+
+param_save = rospy.get_param('~save', "false")
 
 fen_start = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
