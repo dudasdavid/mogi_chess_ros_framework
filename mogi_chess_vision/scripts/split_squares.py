@@ -45,12 +45,19 @@ padding_bottom = 50
 square_margin = 50
 image_size = 100
 
+rospy.init_node('detect_pieces')
+param_sim = rospy.get_param('~sim', "false")
+if param_sim:
+    model_name = "model_sim.best.h5"
+else:
+    model_name = "model.best.h5"
+
 rospack = rospkg.RosPack()
 
 path = rospack.get_path('mogi_chess_vision')
 save_path = path + "/tmp/"
 
-model_path = path + "/train/model.best.h5"
+model_path = path + "/train/" + model_name
 f = h5py.File(model_path, mode='r')
 model_version = f.attrs.get('keras_version')
 keras_version = str(keras_version).encode('utf8')
@@ -200,7 +207,6 @@ cvThreadHandle.start()
 
 bridge = CvBridge()
 
-rospy.init_node('detect_pieces')
 # Define your image topic
 image_topic = "/chessboard_image/color/image_raw"
 #depth_topic = "/chessboard_image/depth/image_raw"
