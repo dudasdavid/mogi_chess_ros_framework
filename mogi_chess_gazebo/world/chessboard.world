@@ -562,7 +562,7 @@
           <pose frame=''>0 0 0.045 0 -0 0</pose>
           <geometry>
             <box>
-              <size>0.6 0.45 0.09</size>
+              <size>0.68 0.45 0.09</size>
             </box>
           </geometry>
           <transparency>0</transparency>
@@ -574,7 +574,7 @@
           <pose frame=''>0 0 0.045 0 -0 0</pose>
           <geometry>
             <box>
-              <size>0.6 0.45 0.09</size>
+              <size>0.68 0.45 0.09</size>
             </box>
           </geometry>
           <surface>
@@ -3168,10 +3168,10 @@
         </link>
       </model>
       <model name='chessclock'>
-        <pose frame=''>0.25 0.33 1.096 0 -0 3.1415</pose>
+        <pose frame=''>0.235 0.33 1.095 0 -0 3.1415</pose>
         <scale>1 1 1</scale>
         <link name='link_0'>
-          <pose frame=''>0.25 0.33 1.096 0 -0 3.1415</pose>
+          <pose frame=''>0.235 0.33 1.095 0 -0 3.1415</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
