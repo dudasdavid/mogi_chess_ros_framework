@@ -17,8 +17,8 @@ class ChessClockNode:
                     
     def main(self):                      
                            
-        rospy.init_node('mogi_chessclock')
-        self.dataPub  = rospy.Publisher('/mogi_chessclock/side', String, queue_size=1)
+        rospy.init_node('mogi_chess_clock')
+        self.dataPub  = rospy.Publisher('/mogi_chess_clock/side', String, queue_size=1)
         self.nodeName = rospy.get_name()
         rospy.loginfo("{0} started".format(self.nodeName))
 
@@ -42,7 +42,7 @@ class ChessClockNode:
         self.commandQueue.append("RST")
 
         # there is a 0.01 wait time in USB comm thread
-        self.commThread = periodic(self.chessclockCommThread, (1.0/self.serialRate)-0.01, "Comm")
+        self.commThread = periodic(self.chessClockCommThread, (1.0/self.serialRate)-0.01, "Comm")
         self.commThread.start()
 
         rate = rospy.Rate(self.publishRate)
@@ -64,7 +64,7 @@ class ChessClockNode:
         self.dataPub.publish(self.data_to_send)
 
 
-    def chessclockCommThread(self):
+    def chessClockCommThread(self):
      
         try:
             if len(self.commandQueue) == 0:
