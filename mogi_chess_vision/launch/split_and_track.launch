@@ -2,6 +2,12 @@
 
   <arg name="sim" default="false"/>
 
+  <include file="$(find mogi_chess_vision)/launch/camera.launch">
+  </include>
+
+  <node name="clock_node" pkg="mogi_chess_hw_interface" type="chess_clock_hw_if.py" respawn="false" output="screen">
+  </node>
+
   <node name="aruco_detector" pkg="mogi_chess_vision" type="aruco_detector.py" respawn="false" output="screen">
   </node>
 

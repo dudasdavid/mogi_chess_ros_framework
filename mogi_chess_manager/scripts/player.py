@@ -6,7 +6,7 @@ from Chessnut import Game
 from stockfish import Stockfish
 import rospkg
 import time
-from mogi_chess_msgs.srv import ReadStatus, MakeMovement
+from mogi_chess_msgs.srv import ReadStatus, MakeMovement, ReadLastMove
 
 def read_status_client():
     rospy.wait_for_service('read_status')
@@ -14,6 +14,15 @@ def read_status_client():
         read_status_service = rospy.ServiceProxy('read_status', ReadStatus)
         resp1 = read_status_service()
         return resp1.status
+    except rospy.ServiceException as e:
+        print("Service call failed: %s"%e)
+
+def read_last_step_client():
+    rospy.wait_for_service('read_last_move')
+    try:
+        read_last_move_service = rospy.ServiceProxy('read_last_move', ReadLastMove)
+        resp1 = read_last_move_service()
+        return resp1.move
     except rospy.ServiceException as e:
         print("Service call failed: %s"%e)
 
@@ -56,6 +65,27 @@ def player_step(fen):
 
     return ret
 
+def manual_step(fen):
+    global stockfish, clock_side
+
+    stockfish.set_fen_position(fen)
+    print(stockfish.get_board_visual())
+
+    print("Waiting for the chess clock!")
+    while clock_side != "b":
+        time.sleep(0.1)
+    time.sleep(1.5)
+
+    resp = read_last_step_client()
+    print(f"Last movement: {resp}")
+
+    return resp
+
+def clock_handler(msg):
+    global clock_side
+
+    clock_side = msg.data
+
 # Set up ROS stuff
 
 rospy.init_node('chess_player', anonymous=True)
@@ -75,6 +105,10 @@ robot_move = True
 
 param_side = rospy.get_param('~side', "w")
 param_type = rospy.get_param('~type', "human")
+
+clock_side = None
+
+rospy.Subscriber("/mogi_chess_clock/side", String, clock_handler)
 
 while not rospy.is_shutdown():
     resp = read_status_client().split(";")
@@ -124,6 +158,9 @@ while not rospy.is_shutdown():
         elif param_type == "stockfish":
             move = stockfish_step(fen)
         
+        elif param_type == "manual":
+            move = manual_step(fen)
+            robot_move = False
 
         if move == None:
             print(30*"*")
@@ -131,6 +168,7 @@ while not rospy.is_shutdown():
             print(30*"*")
             break
 
+        print(move)
         chessgame.set_fen(fen)
         chessgame.apply_move(move)
         

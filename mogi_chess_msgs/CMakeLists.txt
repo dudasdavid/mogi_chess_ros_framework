@@ -56,6 +56,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_service_files(
   FILES
   ReadStatus.srv
+  ReadLastMove.srv
   MakeMovement.srv
   RobotCommand.srv
   RobotStatus.srv
