@@ -405,6 +405,7 @@ class MoveGroupPythonInteface(object):
     else:
         orientation = 45
 
+
     # 0) Make sure that the gripper is open
     self.set_gripper("open")
 
@@ -423,6 +424,7 @@ class MoveGroupPythonInteface(object):
     # 1.4) Move up
     self.go_to_pose_goal(x, y, self.z_high, orientation)
     rospy.sleep(self.wait_time)
+
 
   def go_and_drop(self, xy, out = False):
 
@@ -594,25 +596,49 @@ class MoveGroupPythonInteface(object):
     ## Planning to a Pose Goal
     ## We can plan a motion for this group to a desired pose for the
     ## end-effector:
-    pose_goal = geometry_msgs.msg.Pose()
+    #pose_goal = geometry_msgs.msg.Pose()
     # set proper quaternion for the vertical orientation: https://quaternions.online/
     if orientation == 90:
       # 90 deg gripper position during dropping the pieces
-      pose_goal.orientation.x = -0.707
-      pose_goal.orientation.y = 0.707
+      #pose_goal.orientation.x = -0.707
+      #pose_goal.orientation.y = 0.707
+      orientation_x = -0.707
+      orientation_y = 0.707
     else:
       # default 45 deg gripper position
-      pose_goal.orientation.x = -0.383
-      pose_goal.orientation.y = 0.924
+      #pose_goal.orientation.x = -0.383
+      #pose_goal.orientation.y = 0.924
+      orientation_x = -0.383
+      orientation_y = 0.924
     
-    pose_goal.position.x = x
-    pose_goal.position.y = y
-    pose_goal.position.z = z
+    #pose_goal.position.x = x
+    #pose_goal.position.y = y
+    #pose_goal.position.z = z
 
-    self.move_group.set_pose_target(pose_goal)
+    # Use cartesian plan to the new pose
+    waypoints = []
+    wpose = self.move_group.get_current_pose().pose
+    wpose.position.x = x
+    wpose.position.y = y
+    wpose.position.z = z
+    wpose.orientation.x = orientation_x
+    wpose.orientation.y = orientation_y
+    wpose.orientation.z = 0
+    wpose.orientation.w = 0
+    waypoints.append(copy.deepcopy(wpose))
 
+    (plan, fraction) = self.move_group.compute_cartesian_path(
+                                       waypoints,   # waypoints to follow
+                                       0.005,        # eef_step
+                                       0.0)         # jump_threshold
+
+    self.move_group.execute(plan, wait=True)
+
+    # This was the old go to pose plan!
+    #self.move_group.set_pose_target(pose_goal)
     ## Now, we call the planner to compute the plan and execute it.
-    plan = self.move_group.go(wait=True)
+    #plan = self.move_group.go(wait=True)
+
     # Calling `stop()` ensures that there is no residual movement
     self.move_group.stop()
     # It is always good to clear your targets after planning with poses.
@@ -623,7 +649,8 @@ class MoveGroupPythonInteface(object):
     # Note that since this section of code will not be included in the tutorials
     # we use the class variable rather than the copied state variable
     current_pose = self.move_group.get_current_pose().pose
-    return all_close(pose_goal, current_pose, 0.01)
+    #return all_close(pose_goal, current_pose, 0.01)
+    return all_close(wpose, current_pose, 0.01)
 
   def do_calibration(self):
     raw_input("============ Press `Enter` to go A8 (down) ...")
