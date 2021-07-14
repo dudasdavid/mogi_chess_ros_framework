@@ -316,9 +316,13 @@ def track_fen(prev_fen, new_guess):
     print(f"possible moves: {possible_moves}")
 
     if len(new_empty) == 0:
-        # no movement happened, return previous FEN
-        print("No movement happened")
-        return prev_fen
+        if len(side_appeared) != 0 or len(side_disappeared) != 0:
+            print(f"A {fen_side} piece moved from {side_disappeared} to {side_appeared} that was invalid!")
+            return "invalid", "invalid"
+        else:    
+            # no movement happened, return previous FEN
+            print("No movement happened")
+            return prev_fen, "invalid"
     elif len(new_empty) == 1:
         start = new_empty[0]
         # it can be a normal move, a hit or a promotion
@@ -337,21 +341,29 @@ def track_fen(prev_fen, new_guess):
             end = new_occupied[0] + "q"
 
         elif len(new_occupied) == 0:
-            print(f"Hit happened, side {side} moved, possible moves:")
-            for i in possible_moves:
-                if i[0:2] == new_empty[0]:
-                    if i[2:4] == side_appeared[0]:
-                        end = side_appeared[0]
-                        print(f"{i} matches with new {fen_side} occupied {side_appeared}")
-                        break
-                    else:
-                        print(f"{i} doesn't match with new {fen_side} occupied {side_appeared}")
+            if len(side_appeared) == 1:
+                print(f"Hit happened, side {side} moved, possible moves:")
+                for i in possible_moves:
+                    if i[0:2] == new_empty[0]:
+                        if i[2:4] == side_appeared[0]:
+                            end = side_appeared[0]
+                            print(f"{i} matches with new {fen_side} occupied {side_appeared}")
+                            break
+                        else:
+                            print(f"{i} doesn't match with new {fen_side} occupied {side_appeared}")
+            elif len(side_appeared) == 0:
+                print(f"A piece suddenly disappeared from {new_empty}, put it back now!")
+                return "invalid", "invalid"
+
+            else:
+                print("Something unexpected happened here...")
             
         elif len(new_occupied) == 1:
             print(f"Normal move happened, side {side} moved")
             end = new_occupied[0]
         else:
             print(f"ERROR: 1 new empty fields, moved piece: {piece}!")
+            return "invalid", "invalid"
 
     elif len(new_empty) == 2:
         # it can be castling or en passant
@@ -366,6 +378,7 @@ def track_fen(prev_fen, new_guess):
                 side = 'w'
             else:
                 print(f"ERROR: invalid en passant!")
+                return "invalid", "invalid"
 
             # TODO
 
@@ -386,6 +399,7 @@ def track_fen(prev_fen, new_guess):
                 end = "g" + start[1]
             else:
                 print(f"ERROR: invalid castling, piece 2 moved from {new_empty[1]}!")
+                return "invalid", "invalid"
 
 
             print(f"Castling happened, side {side} moved")
@@ -402,19 +416,29 @@ def track_fen(prev_fen, new_guess):
                 end = "g" + start[1]
             else:
                 print(f"ERROR: invalid castling, piece 2 moved from {new_empty[1]}!")
+                return "invalid", "invalid"
 
             print(f"Castling happened, side {side} moved")
         else:
             print(f"ERROR: 2 new empty fields, moved pieces: {piece1} and {piece2}!")
+            return "invalid", "invalid"
 
     else:
         print(f"ERROR: {len(new_empty)} new empty fields!")
+        return "invalid", "invalid"
 
-    print(f"selected movement: {start + end}")
+    move = start + end
+    print(f"selected movement: {move}")
 
-    chessgame.apply_move(start + end)
+    if move not in possible_moves:
+        print(f"{move} is invalid, see list of valid moves! Set it back now!")
 
-    print(f"New FEN: {str(chessgame)}")
+        return "invalid", "invalid"
 
-    return str(chessgame)
+    else:
+        chessgame.apply_move(move)
+
+        print(f"New FEN: {str(chessgame)}")
+
+        return str(chessgame), move
 

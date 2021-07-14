@@ -4,6 +4,7 @@ import sys
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image, CompressedImage
+from std_msgs.msg import String
 import rospy
 import rospkg 
 import time
@@ -23,7 +24,7 @@ from tensorflow.keras import __version__ as keras_version
 import numpy as np
 import helper_lib
 import os
-from mogi_chess_msgs.srv import SaveFenSamples, SaveFenSamplesResponse
+from mogi_chess_msgs.srv import SaveFenSamples, SaveFenSamplesResponse, ReadLastMove, ReadLastMoveResponse
 
 #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 #if tf.test.gpu_device_name():
@@ -98,7 +99,8 @@ class cvThread(threading.Thread):
         self.inference_trigger = False
         self.result_frame = None
         self.previous_tracked_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-
+        self.previous_side = None
+        self.last_white_move = None
 
     def run(self):
         # Create a single OpenCV window
@@ -152,24 +154,35 @@ class cvThread(threading.Thread):
                 #print(label, short)
                 fen_input.append(short)
 
-                cv2.putText(self.result_frame, label,
-                        (60 + (i % 8) * col_width, 80 + j * row_height),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        0.6, (0, 0, 255), 2)
+                #cv2.putText(self.result_frame, label,
+                #        (60 + (i % 8) * col_width, 80 + j * row_height),
+                #        cv2.FONT_HERSHEY_SIMPLEX,
+                #        0.6, (0, 0, 255), 2)
 
             print("Batch inference time: %.3f" % (time.perf_counter()-start_time))
             #print(fen_input)
             fen = helper_lib.get_fen(fen_input)
             print("CNN Fen: %s" % fen)
 
-            cv2.putText(self.result_frame, fen,
-                        (50, rows - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        1, (0, 0, 255), 3)
+            #cv2.putText(self.result_frame, fen,
+            #            (50, rows - 10),
+            #            cv2.FONT_HERSHEY_SIMPLEX,
+            #            1, (0, 0, 255), 3)
 
-            new_tracked_fen = self.track_fen(self.previous_tracked_fen, fen)
-            self.previous_tracked_fen = new_tracked_fen
-            print("Tracked Fen: %s" % new_tracked_fen)
+            new_tracked_fen, move = self.track_fen(self.previous_tracked_fen, fen)
+
+            if new_tracked_fen == "invalid":
+                new_tracked_fen = self.previous_tracked_fen
+                print("Invalid movement!")
+                self.last_white_move = "invalid"
+            else:
+                self.previous_tracked_fen = new_tracked_fen
+                print(f"Tracked Fen: {new_tracked_fen}, move: {move}")
+
+                if move == "invalid":
+                    self.last_white_move = "invalid"
+                elif new_tracked_fen.split(" ")[1] == "b" and move != "invalid":
+                    self.last_white_move = move
 
             tracked_pieces = helper_lib.get_list_fom_fen(new_tracked_fen)
             print(tracked_pieces)
@@ -181,9 +194,9 @@ class cvThread(threading.Thread):
                 piece = helper_lib.short2label(piece)
 
                 cv2.putText(self.result_frame, piece,
-                        (60 + (i % 8) * col_width, 100 + j * row_height),
+                        (60 + (i % 8) * col_width, 80 + j * row_height),
                         cv2.FONT_HERSHEY_SIMPLEX,
-                        0.6, (0, 255, 0), 2)
+                        0.6, (0, 0, 255), 2)
 
 
             self.inference_trigger = False
@@ -193,7 +206,9 @@ class cvThread(threading.Thread):
 
     def track_fen(self, prev_fen, cnn_output):
 
-        return helper_lib.track_fen(prev_fen, cnn_output)
+        fen, move = helper_lib.track_fen(prev_fen, cnn_output)
+
+        return fen, move
 
     def serve_track_fen(self, req):
         
@@ -212,6 +227,20 @@ class cvThread(threading.Thread):
 
         #input("\npress enter to continue\n")
         return SaveFenSamplesResponse(True)
+
+    def clock_handler(self, msg):
+
+        if self.previous_side != msg.data:
+            self.previous_side = msg.data
+
+            self.inference_trigger = True
+
+            while self.inference_trigger:
+                time.sleep(0.1)
+
+    def serve_last_move(self, req):
+
+        return ReadLastMoveResponse(self.last_white_move)
 
 
 def queueMonocular(msg):
@@ -239,7 +268,9 @@ bridge = CvBridge()
 image_topic = "/chessboard_image/color/image_raw"
 
 rospy.Subscriber(image_topic, Image, queueMonocular)
+rospy.Subscriber("/mogi_chess_clock/side", String, cvThreadHandle.clock_handler)
 s_track = rospy.Service('save_fen_samples', SaveFenSamples, cvThreadHandle.serve_track_fen)
+s_last_mive = rospy.Service('read_last_move', ReadLastMove, cvThreadHandle.serve_last_move)
 
 # Spin until Ctrl+C
 rospy.spin()
