@@ -1,3 +1,7 @@
+#!/usr/bin/env python3.8
+
+from Chessnut import Game
+
 def get_fen(input_array):
     fen_out = ""
     for i, item in enumerate(input_array):
@@ -14,6 +18,21 @@ def get_fen(input_array):
             fen_out += item
 
     return fen_out
+
+def get_list_fom_fen(fen):
+    out_list = []
+
+    fen_list = fen.split(" ")[0].split("/")
+
+    for i, rank in enumerate(fen_list):
+        for j, char in enumerate(rank):
+            if char.isnumeric():
+                for k in range(0, int(char)):
+                    out_list.append("empty")
+            else:
+                out_list.append(char)
+
+    return out_list
 
 def label2class(label_text):
     if label_text == 'empty':
@@ -92,6 +111,76 @@ def class2label(class_num):
 
     return label_text, label_short
 
+def short2label(short_name):
+    if short_name == "empty":
+        label = "empty"
+    elif short_name == "p":
+        label = "Black pawn"
+    elif short_name == "r":
+        label = "Black rook"
+    elif short_name == "n":
+        label = "Black knight"
+    elif short_name == "b":
+        label = "Black bishop"
+    elif short_name == "k":
+        label = "Black king"
+    elif short_name == "q":
+        label = "Black queen"
+    elif short_name == "P":
+        label = "White pawn"
+    elif short_name == "R":
+        label = "White rook"
+    elif short_name == "N":
+        label = "White knight"
+    elif short_name == "B":
+        label = "White bishop"
+    elif short_name == "K":
+        label = "White king"
+    elif short_name == "Q":
+        label = "White queen"
+    else:
+        raise ValueError('Unknown short: %s!' % short_name)
+
+    return label
+
+def get_piece(fen, field):
+    # each piece is identified by a single letter taken from the standard English names
+    # (pawn = "P", knight = "N", bishop = "B", rook = "R", queen = "Q" and king = "K").
+    # White pieces are designated using upper-case letters ("PNBRQK")
+    # while black pieces use lowercase ("pnbrqk").
+
+    rank = int(field[1])
+    column = field[0]
+    #print(column)
+    column_number = ord(column) - 97
+    #print(column_number)
+
+    assert rank < 9
+    assert column_number < 8
+
+    #print(fen)
+    #print(field)
+    ranks = fen.split(" ")[0].split("/")
+    #print(ranks)
+    selected_rank = ranks[8 - rank]
+    #print(selected_rank)
+
+    scanned_column = 0
+    for i in selected_rank:
+        #print("current scan: %d" % scanned_column)
+        if i.isnumeric():
+            scanned_column += int(i)
+        else:
+            if scanned_column == column_number:
+                #print(i)
+                return i
+            scanned_column += 1
+        if scanned_column > column_number:
+            #print("empty field")
+            return "-"
+
+    raise ValueError("Couldn't find the piece!")
+
 def get_piece_ij(fen, i, j):
     # each piece is identified by a single letter taken from the standard English names
     # (pawn = "P", knight = "N", bishop = "B", rook = "R", queen = "Q" and king = "K").
@@ -125,3 +214,207 @@ def get_piece_ij(fen, i, j):
             return "empty"
 
     raise ValueError("Couldn't find the piece!")
+
+def get_empty_fields(fen):
+    empty_fields = []
+
+    fen_list = fen.split("/")
+    fen_list.reverse()
+
+    for i, rank in enumerate(fen_list):
+        rank_char = str(i + 1)
+        scanned_column = 1
+        for j, char in enumerate(rank):
+            if char.isnumeric():
+                for k in range(scanned_column, scanned_column + int(char)):
+                    empty_fields.append(chr(k + 96) + rank_char)
+                scanned_column += int(char)
+            else:
+                scanned_column += 1
+
+    return empty_fields
+
+def get_side_fields(fen, side = "w"):
+    side_fields = []
+
+    fen_list = fen.split("/")
+    fen_list.reverse()
+
+    for i, rank in enumerate(fen_list):
+        rank_char = str(i + 1)
+        scanned_column = 1
+        for j, char in enumerate(rank):
+            if char.isnumeric():
+                scanned_column += int(char)
+            else:
+                if side == "w":
+                    if char.isupper():
+                        side_fields.append(chr(scanned_column + 96) + rank_char)
+                elif side == "b":
+                    if char.islower():
+                        side_fields.append(chr(scanned_column + 96) + rank_char)
+                else:
+                    print(f"ERROR: invalid side {side}")
+                scanned_column += 1
+
+    return side_fields
+
+
+def track_fen(prev_fen, new_guess):
+    # new guess is used only to find new empty and occupied fields.
+
+    prev_fen_split = prev_fen.split(" ")
+    fen_side = prev_fen_split[1]
+
+    prev_empty_fields = get_empty_fields(prev_fen_split[0])
+    new_empty_fields = get_empty_fields(new_guess)
+
+    print(prev_empty_fields)
+    print(new_empty_fields)
+
+    prev_side_fields = get_side_fields(prev_fen_split[0], fen_side)
+    new_side_fields = get_side_fields(new_guess, fen_side)
+
+    new_empty = []
+    new_occupied = []
+
+    for item in prev_empty_fields:
+        if item in new_empty_fields:
+            idx = new_empty_fields.index(item)
+            new_empty_fields.pop(idx)
+        else:
+            new_occupied.append(item)
+
+    new_empty = new_empty_fields
+
+    print(f"New occupied fields {new_occupied}")
+    print(f"New empty fields {new_empty}")
+
+    side_appeared = []
+    side_disappeared = []
+
+    for item in prev_side_fields:
+        if item in new_side_fields:
+            idx = new_side_fields.index(item)
+            new_side_fields.pop(idx)
+        else:
+            side_disappeared.append(item)
+
+    side_appeared = new_side_fields
+
+    print(f"New {fen_side} fields {side_appeared}")
+    print(f"Removed {fen_side} fields {side_disappeared}")
+
+    for i in new_empty:
+        piece = get_piece(prev_fen_split[0], i)
+        print(f"Piece moved: {piece}")
+
+    chessgame = Game()
+    chessgame.set_fen(prev_fen)
+    possible_moves = chessgame.get_moves()
+
+    print(f"possible moves: {possible_moves}")
+
+    if len(new_empty) == 0:
+        # no movement happened, return previous FEN
+        print("No movement happened")
+        return prev_fen
+    elif len(new_empty) == 1:
+        start = new_empty[0]
+        # it can be a normal move, a hit or a promotion
+        piece = get_piece(prev_fen_split[0], new_empty[0])
+        if piece.islower():
+            side = 'b'
+        else:
+            side = 'w'
+
+        if piece == 'P' and int(new_empty[0][1]) == 7:
+            print(f"Promotion happened, side {side} moved")
+            end = new_occupied[0] + "q"
+
+        elif piece == 'p' and int(new_empty[0][1]) == 2:
+            print(f"Promotion happened, side {side} moved")
+            end = new_occupied[0] + "q"
+
+        elif len(new_occupied) == 0:
+            print(f"Hit happened, side {side} moved, possible moves:")
+            for i in possible_moves:
+                if i[0:2] == new_empty[0]:
+                    if i[2:4] == side_appeared[0]:
+                        end = side_appeared[0]
+                        print(f"{i} matches with new {fen_side} occupied {side_appeared}")
+                        break
+                    else:
+                        print(f"{i} doesn't match with new {fen_side} occupied {side_appeared}")
+            
+        elif len(new_occupied) == 1:
+            print(f"Normal move happened, side {side} moved")
+            end = new_occupied[0]
+        else:
+            print(f"ERROR: 1 new empty fields, moved piece: {piece}!")
+
+    elif len(new_empty) == 2:
+        # it can be castling or en passant
+        piece1 = get_piece(prev_fen_split[0], new_empty[0])
+        piece2 = get_piece(prev_fen_split[0], new_empty[1])
+
+        if piece1 in 'pP' and piece2 in 'pP':
+            
+            if int(new_empty[0][1]) == 4 and int(new_empty[1][2]) == 4:
+                side = 'b'
+            elif int(new_empty[0][1]) == 5 and int(new_empty[1][2]) == 5:
+                side = 'w'
+            else:
+                print(f"ERROR: invalid en passant!")
+
+            # TODO
+
+
+            print(f"En passant happened, side {side} moved")
+
+
+        elif piece1 in 'kK' and piece2 in 'rR':
+            start = new_empty[0]
+            if piece1.islower():
+                side = 'b'
+            else:
+                side = 'w'
+
+            if new_empty[1][0] == "a":
+                end = "c" + start[1]
+            elif new_empty[1][0] == "h":
+                end = "g" + start[1]
+            else:
+                print(f"ERROR: invalid castling, piece 2 moved from {new_empty[1]}!")
+
+
+            print(f"Castling happened, side {side} moved")
+        elif piece2 in 'kK' and piece1 in 'rR':
+            start = new_empty[1]
+            if piece2.islower():
+                side = 'b'
+            else:
+                side = 'w'
+
+            if new_empty[0][0] == "a":
+                end = "c" + start[1]
+            elif new_empty[0][0] == "h":
+                end = "g" + start[1]
+            else:
+                print(f"ERROR: invalid castling, piece 2 moved from {new_empty[1]}!")
+
+            print(f"Castling happened, side {side} moved")
+        else:
+            print(f"ERROR: 2 new empty fields, moved pieces: {piece1} and {piece2}!")
+
+    else:
+        print(f"ERROR: {len(new_empty)} new empty fields!")
+
+    print(f"selected movement: {start + end}")
+
+    chessgame.apply_move(start + end)
+
+    print(f"New FEN: {str(chessgame)}")
+
+    return str(chessgame)
+
