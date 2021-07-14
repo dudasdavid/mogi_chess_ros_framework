@@ -42,3 +42,6 @@ roslaunch mogi_chess_manager manager.launch sim:=true save:=true
 roslaunch mogi_chess_vision split_and_save.launch sim:=true
 
 roslaunch mogi_chess_vision split_squares.launch
+
+## Train:
+python3.8 train.py -s true
