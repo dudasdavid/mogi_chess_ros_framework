@@ -91,9 +91,9 @@ class ChessClockNode:
                         print(">>SUCCESSFUL RESET")
                     elif message == "1" or message == "0":
                         if message == "1":
-                            self.side = "b"
-                        else:
                             self.side = "w"
+                        else:
+                            self.side = "b"
 
                     else:
                         print(">>INVALID COMMAND: %s" % out)
