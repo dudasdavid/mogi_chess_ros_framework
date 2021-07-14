@@ -45,3 +45,14 @@ roslaunch mogi_chess_vision split_squares.launch
 
 ## Train:
 python3.8 train.py -s true
+
+## Clock:
+david@david-ros:~$ sudo usermod -a -G tty david
+david@david-ros:~$ sudo usermod -a -G dialout david
+
+
+
+## 4. start manual game and optical tracker:
+roslaunch mogi_chess_manager manager.launch
+roslaunch mogi_chess_vision split_and_track.launch
+roslaunch mogi_chess_manager manual_player.launch
