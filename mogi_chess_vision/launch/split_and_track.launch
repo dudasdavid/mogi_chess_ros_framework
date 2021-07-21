@@ -2,7 +2,6 @@
 
   <arg name="sim" default="false"/>
 
-
   <include unless="$(arg sim)" file="$(find mogi_chess_vision)/launch/camera.launch">
   </include>
 
