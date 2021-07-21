@@ -33,7 +33,6 @@ or
 roslaunch mogi_chess_manager human_player.launch side:=w
 
 ## 3. Start vision package and save samples
-roslaunch mogi_chess_vision camera.launch
 roslaunch mogi_chess_vision split_and_save.launch
 roslaunch mogi_chess_manager manager.launch save:=true
 roslaunch mogi_chess_manager stockfish_player.launch side:=b
@@ -79,3 +78,8 @@ move the pieces in Gazebo
 
 # Useful links:
 http://chess.fortherapy.co.uk/home/chess-piece-identification-technology/
+
+
+nagyobb ütközési zóna a király miatt
+ha invalid a tracker FEN szedje össze a managertől!
+kamera ütközés!!!!
