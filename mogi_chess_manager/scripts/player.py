@@ -162,19 +162,25 @@ while not rospy.is_shutdown():
             move = manual_step(fen)
             robot_move = False
 
+        print(f"Move: {move}")
+
         if move == None:
             print(30*"*")
             print("*         You lose!          *")
             print(30*"*")
             break
 
-        print(move)
-        chessgame.set_fen(fen)
-        chessgame.apply_move(move)
-        
-        resp = make_movement_client(param_side, move, str(chessgame), robot_move)
+        # happens only with real human player in manual mode
+        if move == "invalid":
+            pass
 
-        print_once_flag = True
+        else:
+            chessgame.set_fen(fen)
+            chessgame.apply_move(move)
+            
+            resp = make_movement_client(param_side, move, str(chessgame), robot_move)
+
+            print_once_flag = True
     else:
         if print_once_flag:
             print("Waiting for other player...")
