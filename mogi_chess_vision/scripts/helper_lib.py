@@ -351,6 +351,7 @@ def track_fen(prev_fen, new_guess):
                             break
                         else:
                             print(f"{i} doesn't match with new {fen_side} occupied {side_appeared}")
+                            end = "invalid_hit"
             elif len(side_appeared) == 0:
                 print(f"A piece suddenly disappeared from {new_empty}, put it back now!")
                 return "invalid", "invalid"
