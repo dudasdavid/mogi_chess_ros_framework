@@ -154,10 +154,10 @@ class cvThread(threading.Thread):
                 #print(label, short)
                 fen_input.append(short)
 
-                #cv2.putText(self.result_frame, label,
-                #        (60 + (i % 8) * col_width, 80 + j * row_height),
-                #        cv2.FONT_HERSHEY_SIMPLEX,
-                #        0.6, (0, 0, 255), 2)
+                cv2.putText(self.result_frame, label[0:6],
+                        (60 + (i % 8) * col_width, 100 + j * row_height),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.6, (255, 0, 0), 2)
 
             print("Batch inference time: %.3f" % (time.perf_counter()-start_time))
             #print(fen_input)
@@ -174,6 +174,7 @@ class cvThread(threading.Thread):
             if new_tracked_fen == "invalid":
                 new_tracked_fen = self.previous_tracked_fen
                 print("Invalid movement!")
+                print(f"Return to previous FEN: {new_tracked_fen}")
                 self.last_white_move = "invalid"
             else:
                 self.previous_tracked_fen = new_tracked_fen
