@@ -36,11 +36,17 @@ roslaunch mogi_chess_manager human_player.launch side:=w
 roslaunch mogi_chess_vision camera.launch
 roslaunch mogi_chess_vision split_and_save.launch
 roslaunch mogi_chess_manager manager.launch save:=true
+roslaunch mogi_chess_manager stockfish_player.launch side:=b
+roslaunch mogi_chess_manager stockfish_player.launch side:=w
 
 ### Gazebo:
 roslaunch mogi_chess_manager manager.launch sim:=true save:=true
 roslaunch mogi_chess_vision split_and_save.launch sim:=true
+roslaunch mogi_chess_manager stockfish_player.launch side:=b
+roslaunch mogi_chess_manager stockfish_player.launch side:=w
 
+
+# Run the piece recognition CNN
 roslaunch mogi_chess_vision split_squares.launch
 
 ## Train:
@@ -53,6 +59,19 @@ david@david-ros:~$ sudo usermod -a -G dialout david
 
 
 ## 4. start manual game and optical tracker:
+### Real robot
+BRINGUP
 roslaunch mogi_chess_manager manager.launch
 roslaunch mogi_chess_vision split_and_track.launch
 roslaunch mogi_chess_manager manual_player.launch
+roslaunch mogi_chess_manager stockfish_player.launch side:=b
+
+### Gazebo
+BRINGUP
+roslaunch mogi_chess_manager manager.launch sim:=true
+roslaunch mogi_chess_vision split_and_track.launch sim:=true
+roslaunch mogi_chess_manager manual_player.launch
+roslaunch mogi_chess_manager stockfish_player.launch side:=b
+rosrun mogi_chess_gazebo virtual_chess_clock.py
+
+move the pieces in Gazebo
