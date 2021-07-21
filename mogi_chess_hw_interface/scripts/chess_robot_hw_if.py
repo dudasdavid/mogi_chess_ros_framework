@@ -421,7 +421,7 @@ class MoveGroupPythonInteface(object):
     rospy.sleep(self.wait_time)
 
     # 1.2) Go down
-    self.go_to_pose_goal(x, y, self.z_low, orientation)
+    self.go_to_pose_goal_cartesian(x, y, self.z_low, orientation)
     rospy.sleep(self.wait_time)
 
     # 1.3) Grab the figure
@@ -429,7 +429,7 @@ class MoveGroupPythonInteface(object):
     rospy.sleep(self.gripper_wait_time)
 
     # 1.4) Move up
-    self.go_to_pose_goal(x, y, self.z_high, orientation)
+    self.go_to_pose_goal_cartesian(x, y, self.z_high, orientation)
     rospy.sleep(self.wait_time)
 
 
@@ -450,7 +450,7 @@ class MoveGroupPythonInteface(object):
     rospy.sleep(self.wait_time)
 
     # 7) Move down
-    self.go_to_pose_goal(x, y, z_drop, orientation)
+    self.go_to_pose_goal_cartesian(x, y, z_drop, orientation)
     rospy.sleep(self.wait_time)
 
     # 8) Open gripper
@@ -458,7 +458,7 @@ class MoveGroupPythonInteface(object):
     rospy.sleep(self.gripper_wait_time)
 
     # 9) Move up
-    self.go_to_pose_goal(x, y, self.z_high, orientation)
+    self.go_to_pose_goal_cartesian(x, y, self.z_high, orientation)
     rospy.sleep(self.wait_time)
 
   def push_the_clock(self, side):
@@ -477,7 +477,7 @@ class MoveGroupPythonInteface(object):
     rospy.sleep(self.wait_time)
 
     # 7) Move down
-    self.go_to_pose_goal(clock_x, clock_y, self.clock_z_down, 90)
+    self.go_to_pose_goal_cartesian(clock_x, clock_y, self.clock_z_down, 90)
     rospy.sleep(self.wait_time)
 
     # 8) Send clock trigger in gazebo simulation
@@ -486,7 +486,7 @@ class MoveGroupPythonInteface(object):
       self.gazebo_clock_publisher.publish(self.gazebo_clock_data_to_send)
 
     # 9) Move up
-    self.go_to_pose_goal(clock_x, clock_y, self.clock_z_up, 90)
+    self.go_to_pose_goal_cartesian(clock_x, clock_y, self.clock_z_up, 90)
     rospy.sleep(self.wait_time)
 
   # Obsolete
@@ -509,7 +509,7 @@ class MoveGroupPythonInteface(object):
         rospy.sleep(wait_time)
 
         # 1.2) Go down
-        self.go_to_pose_goal(self.columns[end[0]], self.rows[end[1]], self.z_low)
+        self.go_to_pose_goal_cartesian(self.columns[end[0]], self.rows[end[1]], self.z_low)
         rospy.sleep(wait_time)
 
         # 1.3) Grab the figure
@@ -517,7 +517,7 @@ class MoveGroupPythonInteface(object):
         rospy.sleep(gripper_wait_time)
 
         # 1.4) Move up
-        self.go_to_pose_goal(self.columns[end[0]], self.rows[end[1]], self.z_high)
+        self.go_to_pose_goal_cartesian(self.columns[end[0]], self.rows[end[1]], self.z_high)
         rospy.sleep(wait_time)
 
         # 1.5) Go out of the chess table
@@ -525,7 +525,7 @@ class MoveGroupPythonInteface(object):
         rospy.sleep(wait_time)
 
         # 1.6) Go down
-        self.go_to_pose_goal(self.x_drop_to_table, self.y_drop_to_table, self.z_drop_to_table, orientation = 90)
+        self.go_to_pose_goal_cartesian(self.x_drop_to_table, self.y_drop_to_table, self.z_drop_to_table, orientation = 90)
         rospy.sleep(wait_time)
 
         # 1.7) Release the figure
@@ -533,7 +533,7 @@ class MoveGroupPythonInteface(object):
         rospy.sleep(gripper_wait_time)
 
         # 1.8) Move up
-        self.go_to_pose_goal(self.x_drop_to_table, self.y_drop_to_table, self.z_high, orientation = 90)
+        self.go_to_pose_goal_cartesian(self.x_drop_to_table, self.y_drop_to_table, self.z_high, orientation = 90)
         rospy.sleep(wait_time)
 
         # 1.9) Set nex drop X and Y coordinates
@@ -544,7 +544,7 @@ class MoveGroupPythonInteface(object):
       rospy.sleep(wait_time)
 
       # 3) Go down
-      self.go_to_pose_goal(self.columns[start[0]], self.rows[start[1]], self.z_low)
+      self.go_to_pose_goal_cartesian(self.columns[start[0]], self.rows[start[1]], self.z_low)
       rospy.sleep(wait_time)
 
       # 4) Grab the figure
@@ -552,7 +552,7 @@ class MoveGroupPythonInteface(object):
       rospy.sleep(gripper_wait_time)
 
       # 5) Move up
-      self.go_to_pose_goal(self.columns[start[0]], self.rows[start[1]], self.z_high)
+      self.go_to_pose_goal_cartesian(self.columns[start[0]], self.rows[start[1]], self.z_high)
       rospy.sleep(wait_time)
 
       # 6) Go above end position
@@ -560,7 +560,7 @@ class MoveGroupPythonInteface(object):
       rospy.sleep(wait_time)
 
       # 7) Move down
-      self.go_to_pose_goal(self.columns[end[0]], self.rows[end[1]], self.z_drop)
+      self.go_to_pose_goal_cartesian(self.columns[end[0]], self.rows[end[1]], self.z_drop)
       rospy.sleep(wait_time)
 
       # 8) Open gripper
@@ -568,7 +568,7 @@ class MoveGroupPythonInteface(object):
       rospy.sleep(gripper_wait_time)
 
       # 9) Move up
-      self.go_to_pose_goal(self.columns[end[0]], self.rows[end[1]], self.z_high)
+      self.go_to_pose_goal_cartesian(self.columns[end[0]], self.rows[end[1]], self.z_high)
       rospy.sleep(wait_time)
 
       # 10) Go home
@@ -658,8 +658,42 @@ class MoveGroupPythonInteface(object):
 
     self.move_group.stop()
 
-
   def go_to_pose_goal(self, x, y, z, orientation = 45):
+    ## Planning to a Pose Goal
+    ## We can plan a motion for this group to a desired pose for the
+    ## end-effector:
+    pose_goal = geometry_msgs.msg.Pose()
+    # set proper quaternion for the vertical orientation: https://quaternions.online/
+    if orientation == 90:
+      # 90 deg gripper position during dropping the pieces
+      pose_goal.orientation.x = -0.707
+      pose_goal.orientation.y = 0.707
+    else:
+      # default 45 deg gripper position
+      pose_goal.orientation.x = -0.383
+      pose_goal.orientation.y = 0.924
+    
+    pose_goal.position.x = x
+    pose_goal.position.y = y
+    pose_goal.position.z = z
+
+    self.move_group.set_pose_target(pose_goal)
+
+    ## Now, we call the planner to compute the plan and execute it.
+    plan = self.move_group.go(wait=True)
+    # Calling `stop()` ensures that there is no residual movement
+    self.move_group.stop()
+    # It is always good to clear your targets after planning with poses.
+    # Note: there is no equivalent function for clear_joint_value_targets()
+    self.move_group.clear_pose_targets()
+
+    # For testing:
+    # Note that since this section of code will not be included in the tutorials
+    # we use the class variable rather than the copied state variable
+    current_pose = self.move_group.get_current_pose().pose
+    return all_close(pose_goal, current_pose, 0.01)
+
+  def go_to_pose_goal_cartesian(self, x, y, z, orientation = 45):
     ## Planning to a Pose Goal
     ## We can plan a motion for this group to a desired pose for the
     ## end-effector:
@@ -789,7 +823,7 @@ def main():
     moveit_commander = MoveGroupPythonInteface()
 
     # Set max velocity
-    moveit_commander.move_group.set_max_velocity_scaling_factor(0.4)
+    moveit_commander.move_group.set_max_velocity_scaling_factor(1)
     # Set tolerances, without that IK cannot do a valid plan
     moveit_commander.move_group.set_goal_position_tolerance(0.0005)
     moveit_commander.move_group.set_goal_orientation_tolerance(0.001)
