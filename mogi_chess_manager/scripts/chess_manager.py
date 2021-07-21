@@ -7,7 +7,7 @@ from stockfish import Stockfish
 import rospkg
 import time
 import fen_parser
-from mogi_chess_msgs.srv import ReadStatus, ReadStatusResponse, MakeMovement, MakeMovementResponse, RobotCommand, RobotStatus, SaveFenSamples
+from mogi_chess_msgs.srv import ReadStatus, ReadStatusResponse, MakeMovement, MakeMovementResponse, RobotCommand, RobotStatus, SaveFenSamples, MakeInvalidMovement, MakeInvalidMovementResponse
 
 def send_robot_command_client(command):
     rospy.wait_for_service('robot_command')
@@ -128,7 +128,7 @@ def serve_movement(req):
                 # this has to detect hits and special moves, too!
                 robot_req = calculate_robot_request(previous_fen, req.movement, req.player)
                 print(robot_req)
-                success = send_robot_command_client(robot_req)
+                success = send_robot_command_client(robot_req).success
                 if success:
                     print("Robot movement was successful")
                 else:
@@ -151,6 +151,17 @@ def serve_movement(req):
 
     return MakeMovementResponse(valid_step)
 
+def serve_invalid_movement(req):
+
+    robot_req = "b;invalid"
+    success = send_robot_command_client(robot_req).success
+
+    if success:
+        print("Robot movement was successful")
+    else:
+        print("Robot movement was NOT successful")
+
+    return MakeInvalidMovementResponse(success)
 
 def serve_read_status(req):
     global robot_is_moving, robot_moving_timeout
@@ -180,6 +191,7 @@ hit_list = []
 status_pub = rospy.Publisher('chess_status', String, queue_size=1)
 s_read = rospy.Service('read_status', ReadStatus, serve_read_status)
 s_move = rospy.Service('make_movement', MakeMovement, serve_movement)
+s_invalid_move = rospy.Service('make_invalid_movement', MakeInvalidMovement, serve_invalid_movement)
 rospy.init_node('chess_manager')
 
 param_save = rospy.get_param('~save', "false")

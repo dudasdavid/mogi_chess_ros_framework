@@ -181,6 +181,8 @@ class cvThread(threading.Thread):
 
                 if move == "invalid":
                     self.last_white_move = "invalid"
+                elif move == "no_movement":
+                    self.last_white_move = "no_movement"
                 elif new_tracked_fen.split(" ")[1] == "b" and move != "invalid":
                     self.last_white_move = move
 

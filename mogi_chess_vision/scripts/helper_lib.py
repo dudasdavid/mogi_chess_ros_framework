@@ -322,7 +322,7 @@ def track_fen(prev_fen, new_guess):
         else:    
             # no movement happened, return previous FEN
             print("No movement happened")
-            return prev_fen, "invalid"
+            return prev_fen, "no_movement"
     elif len(new_empty) == 1:
         start = new_empty[0]
         # it can be a normal move, a hit or a promotion

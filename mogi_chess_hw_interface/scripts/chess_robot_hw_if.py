@@ -300,6 +300,7 @@ class MoveGroupPythonInteface(object):
         self.go_to_home()
 
     elif cmd_list[1] == "invalid":
+        self.invalid_animation()
         self.push_the_clock(side)
         self.go_to_home()
     else:
@@ -602,6 +603,61 @@ class MoveGroupPythonInteface(object):
     # For testing:
     current_joints = self.move_group.get_current_joint_values()
     return all_close(joint_goal, current_joints, 0.01)
+
+  def invalid_animation(self):
+
+    # initial pose, same as home
+    joint_goal = self.move_group.get_current_joint_values()
+    joint_goal[0] = -1.5708
+    joint_goal[1] = -1.5708
+    joint_goal[2] = -1.0472
+    joint_goal[3] = -1.0472
+    joint_goal[4] = 1.5708
+    joint_goal[5] = 0.7854
+
+    self.move_group.go(joint_goal, wait=True)
+
+    self.move_group.stop()
+
+    # go to one side
+    joint_goal = self.move_group.get_current_joint_values()
+    joint_goal[0] = -1.5708
+    joint_goal[1] = -1.5708
+    joint_goal[2] = -1.0472
+    joint_goal[3] = -1.0472
+    joint_goal[4] = 1.2708
+    joint_goal[5] = 0.7854
+
+    self.move_group.go(joint_goal, wait=True)
+
+    self.move_group.stop()
+
+    # go to other
+    joint_goal = self.move_group.get_current_joint_values()
+    joint_goal[0] = -1.5708
+    joint_goal[1] = -1.5708
+    joint_goal[2] = -1.0472
+    joint_goal[3] = -1.0472
+    joint_goal[4] = 1.7708
+    joint_goal[5] = 0.7854
+
+    self.move_group.go(joint_goal, wait=True)
+
+    self.move_group.stop()
+
+    # final pose, same as home
+    joint_goal = self.move_group.get_current_joint_values()
+    joint_goal[0] = -1.5708
+    joint_goal[1] = -1.5708
+    joint_goal[2] = -1.0472
+    joint_goal[3] = -1.0472
+    joint_goal[4] = 1.5708
+    joint_goal[5] = 0.7854
+
+    self.move_group.go(joint_goal, wait=True)
+
+    self.move_group.stop()
+
 
   def go_to_pose_goal(self, x, y, z, orientation = 45):
     ## Planning to a Pose Goal

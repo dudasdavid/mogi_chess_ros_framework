@@ -6,7 +6,7 @@ from Chessnut import Game
 from stockfish import Stockfish
 import rospkg
 import time
-from mogi_chess_msgs.srv import ReadStatus, MakeMovement, ReadLastMove
+from mogi_chess_msgs.srv import ReadStatus, MakeMovement, ReadLastMove, MakeInvalidMovement
 
 def read_status_client():
     rospy.wait_for_service('read_status')
@@ -32,6 +32,15 @@ def make_movement_client(player, movement, fen, robot):
         make_movement_service = rospy.ServiceProxy('make_movement', MakeMovement)
         resp1 = make_movement_service(player, movement, fen, robot)
         return resp1.valid
+    except rospy.ServiceException as e:
+        print("Service call failed: %s"%e)
+
+def make_invalid_movement_client():
+    rospy.wait_for_service('make_invalid_movement')
+    try:
+        make_invalid_movement_service = rospy.ServiceProxy('make_invalid_movement', MakeInvalidMovement)
+        resp1 = make_invalid_movement_service()
+        return resp1.finished
     except rospy.ServiceException as e:
         print("Service call failed: %s"%e)
 
@@ -173,7 +182,10 @@ while not rospy.is_shutdown():
         # happens only with real human player in manual mode
         if move == "invalid":
             pass
-
+            resp = make_invalid_movement_client()
+        elif move == "no_movement":
+            pass
+            resp = make_invalid_movement_client()
         else:
             chessgame.set_fen(fen)
             chessgame.apply_move(move)
