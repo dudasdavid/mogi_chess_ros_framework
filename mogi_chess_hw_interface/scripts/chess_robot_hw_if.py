@@ -109,6 +109,9 @@ class MoveGroupPythonInteface(object):
       self.detach_srv.wait_for_service()
       self.detach_time = 0
 
+      # And create another one for the Gazebo simulated gripper
+      self.gazebo_clock_publisher = rospy.Publisher('/mogi_chess_clock/gazebo_trigger', String, queue_size=1)
+      self.gazebo_clock_data_to_send = String()
 
     # Getting Basic Information
     # We can get the name of the reference frame for this robot:
@@ -476,6 +479,11 @@ class MoveGroupPythonInteface(object):
     self.go_to_pose_goal(clock_x, clock_y, self.clock_z_down, 90)
     rospy.sleep(self.wait_time)
 
+    # 8) Send clock trigger in gazebo simulation
+    if self.simulation:
+      self.gazebo_clock_data_to_send.data = "triggered"
+      self.gazebo_clock_publisher.publish(self.gazebo_clock_data_to_send)
+
     # 9) Move up
     self.go_to_pose_goal(clock_x, clock_y, self.clock_z_up, 90)
     rospy.sleep(self.wait_time)
@@ -732,7 +740,7 @@ def main():
     
     raw_input("============ Press `Enter` to go home...")
     moveit_commander.go_to_home()
-    while 1:
+    while not rospy.is_shutdown():
       print("============ Select mode:")
       print("============   p: Play")
       print("============   c: Calibration")
