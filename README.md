@@ -75,3 +75,7 @@ roslaunch mogi_chess_manager stockfish_player.launch side:=b
 rosrun mogi_chess_gazebo virtual_chess_clock.py
 
 move the pieces in Gazebo
+
+
+# Useful links:
+http://chess.fortherapy.co.uk/home/chess-piece-identification-technology/
