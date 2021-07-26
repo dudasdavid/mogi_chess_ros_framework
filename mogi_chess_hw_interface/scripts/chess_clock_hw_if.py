@@ -41,6 +41,9 @@ class ChessClockNode:
         # Add an initial reset command
         self.commandQueue.append("RST")
 
+        # Add an initial start clock command
+        self.commandQueue.append("SPP")
+
         # there is a 0.01 wait time in USB comm thread
         self.commThread = periodic(self.chessClockCommThread, (1.0/self.serialRate)-0.01, "Comm")
         self.commThread.start()
@@ -89,6 +92,9 @@ class ChessClockNode:
                     message = out_splitted[1].split('\\r')[0]
                     if message == "RST":
                         print(">>SUCCESSFUL RESET")
+                        time.sleep(5)
+                    if message == "SPP":
+                        print(">>CLOCK STARTED")
                     elif message == "1" or message == "0":
                         if message == "1":
                             self.side = "w"
