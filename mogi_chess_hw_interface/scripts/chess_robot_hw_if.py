@@ -174,7 +174,7 @@ class MoveGroupPythonInteface(object):
     ### THIS VALUE IS USED DURING CALIBRATION
     self.z_touch_table = self.z_table_offset + 0.005 #THIS IS USED DURING CALIBRATION, IT ALMOST TOUCHES THE TABLE!
     ### THESE VALUES ARE SET TO BE OUTSIDE THE TABLE
-    self.z_drop_to_table = self.z_table_offset + 0.005
+    self.z_drop_to_table = self.z_table_offset + 0.008
     self.x_drop_to_table = self.columns["h"] - 0.08
     self.y_drop_to_table = self.rows["8"] + 0.02
     self.x_drop_to_table_offset = 0.03
