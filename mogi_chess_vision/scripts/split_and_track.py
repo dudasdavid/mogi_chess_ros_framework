@@ -101,6 +101,7 @@ class cvThread(threading.Thread):
         self.previous_tracked_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
         self.previous_side = None
         self.last_white_move = None
+        self.manager_fen = None
 
     def run(self):
         # Create a single OpenCV window
@@ -123,7 +124,7 @@ class cvThread(threading.Thread):
         if self.result_frame is None:
             self.result_frame = img.copy()
         
-
+        retry_flag = False
         if self.inference_trigger:
 
             self.result_frame = img.copy()
@@ -175,7 +176,14 @@ class cvThread(threading.Thread):
                 new_tracked_fen = self.previous_tracked_fen
                 print("Invalid movement!")
                 print(f"Return to previous FEN: {new_tracked_fen}")
+                print(f"FEN from manager: {self.manager_fen}")
+                if self.manager_fen is not None:
+                    if self.previous_tracked_fen.split(" ")[0] != self.manager_fen.split(" ")[0]:
+                        print(f"Previous tracked FEN and manager mismatch! Falling back to manager FEN!")
+                        self.previous_tracked_fen = self.manager_fen
+                        retry_flag = True
                 self.last_white_move = "invalid"
+                
             else:
                 self.previous_tracked_fen = new_tracked_fen
                 print(f"Tracked Fen: {new_tracked_fen}, move: {move}")
@@ -184,8 +192,15 @@ class cvThread(threading.Thread):
                     self.last_white_move = "invalid"
                 elif move == "no_movement":
                     self.last_white_move = "no_movement"
+                    if self.manager_fen is not None:
+                        if self.previous_tracked_fen.split(" ")[0] != self.manager_fen.split(" ")[0]:
+                            print(f"Previous tracked FEN and manager mismatch! Falling back to manager FEN!")
+                            self.previous_tracked_fen = self.manager_fen
+                            retry_flag = True
                 elif new_tracked_fen.split(" ")[1] == "b" and move != "invalid":
                     self.last_white_move = move
+
+                print(f"Last white move: {self.last_white_move}")
 
             tracked_pieces = helper_lib.get_list_fom_fen(new_tracked_fen)
             print(tracked_pieces)
@@ -203,6 +218,12 @@ class cvThread(threading.Thread):
 
 
             self.inference_trigger = False
+
+            if retry_flag:
+                self.inference_trigger = True
+                print(20*"*")
+                print("Retry happened!")
+                print(20*"*")
 
 
         return self.result_frame
@@ -245,6 +266,9 @@ class cvThread(threading.Thread):
 
         return ReadLastMoveResponse(self.last_white_move)
 
+    def manager_fen_handler(self, msg):
+        self.manager_fen = msg.data
+
 
 def queueMonocular(msg):
     try:
@@ -272,6 +296,7 @@ image_topic = "/chessboard_image/color/image_raw"
 
 rospy.Subscriber(image_topic, Image, queueMonocular)
 rospy.Subscriber("/mogi_chess_clock/side", String, cvThreadHandle.clock_handler)
+rospy.Subscriber("/chess_manager/fen", String, cvThreadHandle.manager_fen_handler)
 s_track = rospy.Service('save_fen_samples', SaveFenSamples, cvThreadHandle.serve_track_fen)
 s_last_mive = rospy.Service('read_last_move', ReadLastMove, cvThreadHandle.serve_last_move)
 
