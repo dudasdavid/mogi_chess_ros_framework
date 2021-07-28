@@ -14,6 +14,7 @@ class ChessClockNode:
         self.data_to_send = String()
         self.side = "x"
         self.commandQueue = []
+        self.clock_started = False
                     
     def main(self):                      
                            
@@ -95,6 +96,7 @@ class ChessClockNode:
                         time.sleep(2)
                     elif message == "SPP":
                         print(">>CLOCK STARTED")
+                        self.clock_started = True
                     elif message == "1" or message == "0":
                         if message == "1":
                             self.side = "w"
@@ -106,6 +108,10 @@ class ChessClockNode:
                 else:
                     pass
                     print(">>NOT OK: %s" % out)
+
+            if self.clock_started == False and "SPP" not in self.commandQueue:
+                print("Adding clock start again!")
+                self.commandQueue.append("SPP")
         except:
             print("exception")
 
