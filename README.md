@@ -79,7 +79,3 @@ move the pieces in Gazebo
 # Useful links:
 http://chess.fortherapy.co.uk/home/chess-piece-identification-technology/
 
-
-nagyobb ütközési zóna a király miatt
-ha invalid a tracker FEN szedje össze a managertől!
-kamera ütközés!!!!

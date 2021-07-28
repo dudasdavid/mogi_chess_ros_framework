@@ -4,7 +4,7 @@
   
   <!-- Camera -->
   <joint type="fixed" name="camera_joint">
-    <origin xyz="-0.3 0.3 0.6" rpy="0 1.1 0"/>
+    <origin xyz="-0.3 0.3 0.55" rpy="0 1.05 0"/>
     <child link="camera_link"/>
     <parent link="world"/>
     <axis xyz="0 1 0" />
@@ -23,9 +23,9 @@
     </inertial>
 
     <collision name='collision'>
-      <origin xyz="0 0 0" rpy="0 0 0"/> 
+      <origin xyz="0 0 0" rpy="0 1.5707 0"/> 
       <geometry>
-        <box size=".05 .05 .05"/>
+        <cylinder length="0.05" radius="0.1"/>
       </geometry>
     </collision>
 
