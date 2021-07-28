@@ -93,7 +93,7 @@ class ChessClockNode:
                     if message == "RST":
                         print(">>SUCCESSFUL RESET")
                         time.sleep(5)
-                    if message == "SPP":
+                    elif message == "SPP":
                         print(">>CLOCK STARTED")
                     elif message == "1" or message == "0":
                         if message == "1":
