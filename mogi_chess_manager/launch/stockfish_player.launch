@@ -4,11 +4,13 @@
 
   <arg name="side" default="b"/>
   <arg name="type" default="stockfish"/>
+  <arg name="level" default="20"/>
 
   <node name="$(anon mogi_chess_stockfish)" pkg="mogi_chess_manager" type="player.py" output ="screen">
     <rosparam subst_value="true">
       side: $(arg side)
       type: $(arg type)
+      level: $(arg level)
     </rosparam>
   </node>
 

@@ -104,7 +104,8 @@ path = rospack.get_path('mogi_chess_stockfish')
 stockfish_path = path + "/stockfish/stockfish_13_linux_x64_bmi2"
 print(stockfish_path)
 stockfish = Stockfish(stockfish_path, parameters={"Threads": 2, "Minimum Thinking Time": 30})
-stockfish.set_skill_level(20)
+param_level = rospy.get_param('~level', "20")
+stockfish.set_skill_level(int(param_level))
 print(f"Using Stockfish v{stockfish.get_stockfish_major_version()}, skill level: {stockfish.get_parameters()['Skill Level']}")
 
 chessgame = Game()
@@ -141,7 +142,7 @@ while not rospy.is_shutdown():
         time.sleep(1)
         continue
     # If the status is mate you won or lose, no more moves
-    elif status == "mate" and point == "0":
+    elif status == "mate" and (point == "0" or point == "-1"):
         if current_side != param_side:
             print(30*"*")
             print("*          You won!          *")
