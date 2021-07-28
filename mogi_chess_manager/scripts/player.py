@@ -142,7 +142,7 @@ while not rospy.is_shutdown():
         time.sleep(1)
         continue
     # If the status is mate you won or lose, no more moves
-    elif status == "mate" and (point == "0" or point == "-1"):
+    elif status == "mate" and point == "0":# or point == "-1"):
         if current_side != param_side:
             print(30*"*")
             print("*          You won!          *")
