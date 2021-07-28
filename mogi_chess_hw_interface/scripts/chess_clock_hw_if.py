@@ -80,7 +80,7 @@ class ChessClockNode:
             self.ser.write(b"%s\r\n" % command.encode('ascii','ignore'))
             
             out = b''
-            time.sleep(0.008)
+            time.sleep(0.02)
             while self.ser.inWaiting() > 0:
                 out += self.ser.read(1)
 
@@ -92,7 +92,7 @@ class ChessClockNode:
                     message = out_splitted[1].split('\\r')[0]
                     if message == "RST":
                         print(">>SUCCESSFUL RESET")
-                        time.sleep(5)
+                        time.sleep(2)
                     elif message == "SPP":
                         print(">>CLOCK STARTED")
                     elif message == "1" or message == "0":
