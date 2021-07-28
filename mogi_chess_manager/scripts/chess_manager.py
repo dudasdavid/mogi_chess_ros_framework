@@ -123,6 +123,9 @@ def serve_movement(req):
             current_fen = stockfish.get_fen_position()
             current_side = current_fen.split(' ')[1]
 
+            fen_str.data = current_fen
+            fen_pub.publish(fen_str)
+
             if req.robot:
                 robot_is_moving = True
                 # this has to detect hits and special moves, too!
@@ -222,5 +225,9 @@ point = eval['value']
 status = eval['type']
 current_fen = stockfish.get_fen_position()
 current_side = current_fen.split(' ')[1]
+
+fen_str = String()
+fen_str.data = current_fen
+fen_pub.publish(fen_str)
 
 rospy.spin()
