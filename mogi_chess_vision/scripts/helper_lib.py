@@ -373,18 +373,32 @@ def track_fen(prev_fen, new_guess):
 
         if piece1 in 'pP' and piece2 in 'pP':
             
-            if int(new_empty[0][1]) == 4 and int(new_empty[1][2]) == 4:
-                side = 'b'
-            elif int(new_empty[0][1]) == 5 and int(new_empty[1][2]) == 5:
-                side = 'w'
+            # prev_fen_split[3] indicates if there is a possible en passant
+            # e.g rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2
+            # e6 is potential en passant
+            if new_occupied[0] == prev_fen_split[3]:
+                if int(new_empty[0][1]) == 4 and int(new_empty[1][2]) == 4:
+                    side = 'b'
+                    if piece1 == 'p':
+                        start = new_empty[0]
+                    else:
+                        start = new_empty[1]
+
+                elif int(new_empty[0][1]) == 5 and int(new_empty[1][2]) == 5:
+                    side = 'w'
+                    if piece1 == 'P':
+                        start = new_empty[0]
+                    else:
+                        start = new_empty[1]
+
+                else:
+                    print(f"ERROR: invalid en passant! Fields {new_empty[0]} and {new_empty[1]} are empty, {new_occupied[0]} is occupied and possible en passant from FEN is {prev_fen_split[3]}!")
+
+                end = new_occupied[0]
+                print(f"En passant happened, side {side} moved")
+            
             else:
-                print(f"ERROR: invalid en passant!")
-                return "invalid", "invalid"
-
-            # TODO
-
-
-            print(f"En passant happened, side {side} moved")
+                print(f"ERROR: some strange invalid en passant happened!")
 
 
         elif piece1 in 'kK' and piece2 in 'rR':
