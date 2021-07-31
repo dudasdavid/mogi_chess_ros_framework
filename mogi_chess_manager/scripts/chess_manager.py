@@ -101,7 +101,10 @@ def calculate_robot_request(fen, move, side):
         return movement_str
 
     # If none of above, it's just a normal step
-    movement_str = f"{side};n;{move[:2]};{move[2:4]}"
+    if fen_parser.can_move_low(fen, move[:2], move[2:4]):
+        movement_str = f"{side};nl;{move[:2]};{move[2:4]}"
+    else:
+        movement_str = f"{side};n;{move[:2]};{move[2:4]}"
     return movement_str
 
 def serve_movement(req):

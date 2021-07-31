@@ -59,3 +59,70 @@ def fen_diff(fen_prev, fen_next):
 
     return valid
 
+def can_move_low(fen, start, end):
+    print(f"Decide if low movement is possible! Start: {start}, end: {end}")
+
+    if start[0] == end[0]:
+        print("Vertical movement detected!")
+        if abs(int(start[1]) - int(end[1])) == 1:
+            print("Only one square movement, low movement is possible!")
+            return True
+
+        elif int(start[1]) < int(end[1]):
+            print(f"Rank of start {start} is lower than end {end}")
+            is_empty = True
+            for i in range(int(start[1]) + 1, int(end[1])):
+                if get_piece(fen, start[0] + str(i)) != "-":
+                    is_empty = False
+
+        elif int(start[1]) > int(end[1]):
+            print(f"Rank of start {start} is higher than end {end}")
+            is_empty = True
+            for i in range(int(end[1]) + 1, int(start[1])):
+                if get_piece(fen, start[0] + str(i)) != "-":
+                    is_empty = False
+
+        else:
+            print("Vertical low movement detection error!")
+            return False
+
+        if is_empty:
+            return True
+        else:
+            return False
+
+    elif start[1] == end[1]:
+        print("Horizontal movement detected!")
+        if abs(ord(start[0]) - ord(end[0])) == 1:
+            print("Only one square movement, low movement is possible!")
+            return True
+
+        elif ord(start[0]) < ord(end[0]):
+            print(f"Column of start {start} is lower than end {end}")
+            is_empty = True
+            for i in range(ord(start[0]) + 1, ord(end[0])):
+                if get_piece(fen, chr(i) + start[1]) != "-":
+                    is_empty = False
+
+        elif ord(start[0]) > ord(end[0]):
+            print(f"Column of start {start} is higher than end {end}")
+            is_empty = True
+            for i in range(ord(end[0]) + 1, ord(start[0])):
+                if get_piece(fen, chr(i) + start[1]) != "-":
+                    is_empty = False
+
+        else:
+            print("Horizontal low movement detection error!")
+            return False
+
+        if is_empty:
+            return True
+        else:
+            return False
+
+    #TODO: diagonal movement detection
+    else:
+        print("Low movement is not possible!")
+
+    return False
+

@@ -219,6 +219,7 @@ class MoveGroupPythonInteface(object):
     cmd_list = cmd.command.split(";")
     print(cmd_list)
     side = cmd_list[0]
+    # normal movement
     if cmd_list[1] == "n":
         start = cmd_list[2]
         end = cmd_list[3]
@@ -230,6 +231,19 @@ class MoveGroupPythonInteface(object):
         self.go_and_drop((x,y))
         self.push_the_clock(side)
         self.go_to_home()
+    # normal low movement
+    elif cmd_list[1] == "nl":
+        start = cmd_list[2]
+        end = cmd_list[3]
+        x = self.columns[start[0]]
+        y = self.rows[start[1]]
+        self.go_and_grab((x,y), low = True)
+        x = self.columns[end[0]]
+        y = self.rows[end[1]]
+        self.go_and_drop((x,y), low = True)
+        self.push_the_clock(side)
+        self.go_to_home()
+    # hit
     elif cmd_list[1] == "x":
         hit_start = cmd_list[2]
         hit_id = cmd_list[3]
@@ -247,6 +261,7 @@ class MoveGroupPythonInteface(object):
         self.go_and_drop((x,y))
         self.push_the_clock(side)
         self.go_to_home()
+    # castling
     elif cmd_list[1] == "c":
         start1 = cmd_list[2]
         end1 = cmd_list[3]
@@ -254,10 +269,10 @@ class MoveGroupPythonInteface(object):
         end2 = cmd_list[5]
         x = self.columns[start1[0]]
         y = self.rows[start1[1]]
-        self.go_and_grab((x,y))
+        self.go_and_grab((x,y), low = True)
         x = self.columns[end1[0]]
         y = self.rows[end1[1]]
-        self.go_and_drop((x,y))
+        self.go_and_drop((x,y), low = True)
         x = self.columns[start2[0]]
         y = self.rows[start2[1]]
         self.go_and_grab((x,y))
@@ -266,6 +281,7 @@ class MoveGroupPythonInteface(object):
         self.go_and_drop((x,y))
         self.push_the_clock(side)
         self.go_to_home()
+    # en passant
     elif cmd_list[1] == "e":
         start = cmd_list[2]
         end = cmd_list[3]
@@ -283,6 +299,7 @@ class MoveGroupPythonInteface(object):
         self.go_and_drop(self.drop_slots[int(hit_id)], True)
         self.push_the_clock(side)
         self.go_to_home()
+    # promotion
     elif cmd_list[1] == "p":
         promotion_id = cmd_list[2]
         promotion_end = cmd_list[3]
@@ -402,7 +419,7 @@ class MoveGroupPythonInteface(object):
       self.gazebo_publisher.publish(self.gazebo_trajectory_command)
 
 
-  def go_and_grab(self, xy, out = False):
+  def go_and_grab(self, xy, out = False, low = False):
 
     x = xy[0]
     y = xy[1]
@@ -429,11 +446,14 @@ class MoveGroupPythonInteface(object):
     rospy.sleep(self.gripper_wait_time)
 
     # 1.4) Move up
-    self.go_to_pose_goal_cartesian(x, y, self.z_high, orientation)
+    if low == True:
+        self.go_to_pose_goal_cartesian(x, y, self.z_drop, orientation)
+    else:
+        self.go_to_pose_goal_cartesian(x, y, self.z_high, orientation)
     rospy.sleep(self.wait_time)
 
 
-  def go_and_drop(self, xy, out = False):
+  def go_and_drop(self, xy, out = False, low = False):
 
     x = xy[0]
     y = xy[1]
@@ -446,12 +466,16 @@ class MoveGroupPythonInteface(object):
         z_drop = self.z_drop
 
     # 6) Go above end position
-    self.go_to_pose_goal(x, y, self.z_high, orientation)
-    rospy.sleep(self.wait_time)
+    if low == True:
+      self.go_to_pose_goal(x, y, self.z_drop, orientation)
+      rospy.sleep(self.wait_time)
+    else:
+      self.go_to_pose_goal(x, y, self.z_high, orientation)
+      rospy.sleep(self.wait_time)
 
-    # 7) Move down
-    self.go_to_pose_goal_cartesian(x, y, z_drop, orientation)
-    rospy.sleep(self.wait_time)
+      # 7) Move down
+      self.go_to_pose_goal_cartesian(x, y, z_drop, orientation)
+      rospy.sleep(self.wait_time)
 
     # 8) Open gripper
     self.set_gripper("open")
