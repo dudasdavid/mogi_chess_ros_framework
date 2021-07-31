@@ -58,24 +58,40 @@ def calculate_robot_request(fen, move, side):
 
     # Detect promotion
     if len(move) == 5:
-        print(f"Promotion happened! Requested piece: {move[4]}, available pieces in hit list:")
-        print(hit_list)
-        # Do we need to double-check?
-        # TODO: This only works, when the piece is available in the hit list...
-        if moved_piece == "p":
-            promotion_slot = hit_list.index(move[4])
-            movement_str = f"{side};p;{promotion_slot};{move[2:4]};{move[:2]};{promotion_slot}"
-            hit_list[promotion_slot] = "p"
-            return movement_str
+        if moved_piece in "pP":
 
-        elif moved_piece == "P":
-            promotion_slot = hit_list.index(move[4].upper())
-            movement_str = f"{side};p;{promotion_slot};{move[2:4]};{move[:2]};{promotion_slot}"
-            hit_list[promotion_slot] = "P"
-            return movement_str
+            if moved_piece == "p":
+                requested_piece = move[4]
+            else:
+                requested_piece = move[4].upper()
+
+            print(f"Promotion happened! Requested piece: {requested_piece}, available pieces in hit list:")
+            print(hit_list)
+
+            # if requested piece is not available in hit list
+            if requested_piece not in hit_list:
+                print(f"Requested piece is not available in hit list! Please put a {requested_piece} to {move[2:4]}")
+                movement_str = f"{side};px;{move[:2]};{hit_slot}"
+                hit_slot += 1
+                hit_list.append(moved_piece)
+                return movement_str
+
+            else:
+                print("Requested piece is available in hit list!")
+                if moved_piece == "p":
+                    promotion_slot = hit_list.index(move[4])
+                    movement_str = f"{side};p;{promotion_slot};{move[2:4]};{move[:2]};{promotion_slot}"
+                    hit_list[promotion_slot] = "p"
+                    return movement_str
+
+                elif moved_piece == "P":
+                    promotion_slot = hit_list.index(move[4].upper())
+                    movement_str = f"{side};p;{promotion_slot};{move[2:4]};{move[:2]};{promotion_slot}"
+                    hit_list[promotion_slot] = "P"
+                    return movement_str
 
         else:
-            print("Something wrong happened!")
+            print(f"ERROR: {move} is 5 character long but moved pieces is: {moved_piece} not p or P!")
             return None
 
     # Detect en passant -- hit will happen!

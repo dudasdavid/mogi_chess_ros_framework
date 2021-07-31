@@ -315,6 +315,17 @@ class MoveGroupPythonInteface(object):
         self.go_and_drop(self.drop_slots[int(hit_id)], True)
         self.push_the_clock(side)
         self.go_to_home()
+    # promotion, but promoted piece is not available on the table!
+    elif cmd_list[1] == "px":
+        hit_start = cmd_list[2]
+        hit_id = cmd_list[3]
+        x = self.columns[hit_start[0]]
+        y = self.rows[hit_start[1]]
+        self.go_and_grab((x,y))
+        self.go_and_drop(self.drop_slots[int(hit_id)], True)
+        self.push_the_clock(side)
+        self.go_to_home()
+
 
     elif cmd_list[1] == "invalid":
         self.invalid_animation()
