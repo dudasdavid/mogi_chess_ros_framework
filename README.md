@@ -79,3 +79,5 @@ move the pieces in Gazebo
 # Useful links:
 http://chess.fortherapy.co.uk/home/chess-piece-identification-technology/
 
+Note:
+manual player's promotion is always queen!
