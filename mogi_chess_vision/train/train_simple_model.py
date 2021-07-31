@@ -1,11 +1,12 @@
 # import the necessary packages
-from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import Activation, Flatten, Dense, Dropout, Conv2D, MaxPooling2D, Lambda, BatchNormalization
+from tensorflow.keras.models import Sequential, load_model, Model
+from tensorflow.keras.layers import Activation, Flatten, Dense, Dropout, Conv2D, MaxPooling2D, Lambda, BatchNormalization, Concatenate, Add, GlobalAveragePooling2D, Input
 from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint
 from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.optimizers import Adam, SGD
 from tensorflow.keras.losses import SparseCategoricalCrossentropy
 from tensorflow.keras.metrics import CategoricalAccuracy
+import tensorflow.keras.backend as K
 from sklearn.model_selection import train_test_split
 import sklearn
 from imutils import paths
@@ -78,7 +79,44 @@ def build_model(width, height, depth, classes):
     
     # return the constructed network architecture
     return model
-   
+
+def build_model_nvidia(width, height, depth, classes):
+    model = Sequential()
+    input_shape = (height, width, depth)
+
+    model.add(Conv2D(32, (3, 3), padding='same', input_shape=input_shape))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D((2, 2), padding='valid'))
+    model.add(Conv2D(32, (3, 3), padding='same'))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D((2, 2), padding='valid'))
+
+    model.add(Conv2D(64, (3, 3), padding='same'))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D((2, 2), padding='valid'))
+    model.add(Conv2D(64, (3, 3), padding='same'))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D((2, 2), padding='valid'))
+
+    model.add(Conv2D(128, (3, 3), padding='same'))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D((2, 2), padding='valid'))
+    model.add(Conv2D(128, (3, 3), padding='same'))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D((2, 2), padding='valid'))
+
+    model.add(Flatten())
+    model.add(Dropout(0.2))
+    #model.add(BatchNormalization())
+    model.add(Dense(1024))
+    model.add(Dense(256))
+    model.add(Dense(64))
+    # softmax classifier
+    model.add(Dense(classes))
+    model.add(Activation("softmax"))
+
+    return model
+
 # grab command line args
 args = build_argparser().parse_args()
 
@@ -148,7 +186,8 @@ DECAY   = INIT_LR / EPOCHS
 
 # initialize a new model
 if not args.is_continue:
-    model = build_model(width=image_size, height=image_size, depth=3, classes=13)
+    #model = build_model(width=image_size, height=image_size, depth=3, classes=13)
+    model = build_model_nvidia(width=image_size, height=image_size, depth=3, classes=13)
 
     opt = SGD(lr=INIT_LR, decay=DECAY)
     model.compile(optimizer=opt, loss=SparseCategoricalCrossentropy(from_logits=True), metrics=["accuracy"])#, CategoricalAccuracy()])
