@@ -189,11 +189,15 @@ while not rospy.is_shutdown():
             resp = make_invalid_movement_client()
         else:
             chessgame.set_fen(fen)
-            chessgame.apply_move(move)
-            
-            resp = make_movement_client(param_side, move, str(chessgame), robot_move)
+            possible_moves = chessgame.get_moves()
+            if move in possible_moves:
+                chessgame.apply_move(move)
+                
+                resp = make_movement_client(param_side, move, str(chessgame), robot_move)
 
-            print_once_flag = True
+                print_once_flag = True
+            else:
+                print(f"Something unexpected happened! Move {move} is not in possible moves: {possible_moves}")
     else:
         if print_once_flag:
             print("Waiting for other player...")
