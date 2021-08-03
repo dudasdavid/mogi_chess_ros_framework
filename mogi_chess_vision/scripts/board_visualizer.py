@@ -33,18 +33,34 @@ def update():
     i = 0
     while True:
         board = chess.Board(FENs[i])
-        a = chess.svg.board(board, size=350)
+        squares = None#board.attacks(chess.A2)
+        squares = chess.SquareSet([chess.A8, chess.A1])
+        a = chess.svg.board(board, squares=squares, size=350, check=chess.B8, arrows=[chess.svg.Arrow(chess.E2, chess.F7),chess.svg.Arrow(chess.E8, chess.A4),chess.svg.Arrow(chess.B5, chess.B5),chess.svg.Arrow(chess.C6, chess.C6, color="red")])
         b = cairosvg.svg2png(bytestring=a, write_to=None)
         c = plt.imread(BytesIO(b))
         plt.imshow(c)
 
         fig.canvas.draw()
+
+        text2_string.set(FENs[i])
         time.sleep(1)
 
-        i = (i + 1) % 3
+        i = (i + 1) % len(FENs)
 
-plot_widget.grid(row=0, column=0)
+plot_widget.grid(row=0, column=0, rowspan = 2)
+
+text2_string = tk.StringVar()
+text2_string.set("test2")
+text2 = tk.Label(root, width=50, textvariable=text2_string)
+text2.grid(row=0, column=1)
+
+text3_string = tk.StringVar()
+text3_string.set("test3")
+text3 = tk.Label(root, width=50, textvariable=text3_string)
+text3.grid(row=1, column=1)
 
 _thread.start_new_thread(update,())
 
+# We don't have to use rospy.spin() because tk's mainloop is blocking anyway:
+# https://answers.ros.org/question/106781/rospy-and-tkinter-spin-and-mainloop/
 root.mainloop()
