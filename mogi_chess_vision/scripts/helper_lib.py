@@ -34,6 +34,31 @@ def get_list_fom_fen(fen):
 
     return out_list
 
+def get_king(fen, side):
+    fen = fen.split(" ")[0]
+
+    if side == "w":
+        king = "K"
+    elif side == "b":
+        king = "k"
+    else:
+        print("INVALID SIDE")
+        return None
+
+    ranks = fen.split("/")
+    for i, r in enumerate(ranks):
+        if king in r:
+            j = 0
+            for char in r:
+                if char.isnumeric():
+                    j += int(char)
+                elif char == king:
+                    #print(chr(j + 97) + str(8-i))
+                    return chr(j + 97) + str(8-i)
+                else:
+                    j += 1
+
+
 def label2class(label_text):
     if label_text == 'empty':
         class_num = 0

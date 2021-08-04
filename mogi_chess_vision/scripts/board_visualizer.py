@@ -1,3 +1,5 @@
+#!/usr/bin/env python3.8
+
 import numpy as np
 import tkinter as tk
 
@@ -13,9 +15,27 @@ import chess
 import chess.svg
 from io import BytesIO
 import cairosvg
+import signal
+import sys
+
+import rospy
+from std_msgs.msg import String
+
+import helper_lib
+
+def handle_fen(msg):
+    global fen
+    fen = msg.data
+
+# test publisher:
+# rostopic pub -1 /chess_manager/fen std_msgs/String "rnbqkbnr/ppp4/8/8/8/PP1PP1PP/RNBQKBNR w KQkq - 0 1"
+rospy.init_node('board_visualizer')
+fen_topic = "/chess_manager/fen"
+rospy.Subscriber(fen_topic, String, handle_fen)
 
 board = chess.Board()
-FENs = ["1k1r4/pp1b1R2/3q2pp/4p3/2B5/4Q3/PPP2B2/2K5 b - - 0 1", "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "rnbqkbnr/ppp1pppp/3p4/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"]
+fen = None
+fen_prev = None
 
 root = tk.Tk()
 
@@ -29,23 +49,52 @@ plt.imshow(c)
 canvas = FigureCanvasTkAgg(fig, master=root)
 plot_widget = canvas.get_tk_widget()
 
+exit_flag = True
+
+def quit(sig = None, frame = None):
+    global exit_flag
+    print("exit")
+    exit_flag = False
+    root.quit()
+    root.update()
+    root.destroy()
+
 def update():
-    i = 0
-    while True:
-        board = chess.Board(FENs[i])
-        squares = None#board.attacks(chess.A2)
-        squares = chess.SquareSet([chess.A8, chess.A1])
-        a = chess.svg.board(board, squares=squares, size=350, check=chess.B8, arrows=[chess.svg.Arrow(chess.E2, chess.F7),chess.svg.Arrow(chess.E8, chess.A4),chess.svg.Arrow(chess.B5, chess.B5),chess.svg.Arrow(chess.C6, chess.C6, color="red")])
-        b = cairosvg.svg2png(bytestring=a, write_to=None)
-        c = plt.imread(BytesIO(b))
-        plt.imshow(c)
+    global fen, fen_prev
+    while exit_flag:
+        if fen != fen_prev:
+            fen_prev = fen
+            board = chess.Board(fen)
 
-        fig.canvas.draw()
+            side = fen.split(" ")[1]
 
-        text2_string.set(FENs[i])
-        time.sleep(1)
+            if board.is_check():
+                print(f"Current side: {side} is in check!")
+                check_square = helper_lib.get_king(fen, "w")
+                check_square = chess.parse_square(check_square)
+                print(check_square)
+                a = chess.svg.board(board, size=350, check=check_square)
+            else:
+                a = chess.svg.board(board, size=350)
 
-        i = (i + 1) % len(FENs)
+
+            #squares = None#board.attacks(chess.A2)
+            #squares = chess.SquareSet([chess.A8, chess.A1])
+            #a = chess.svg.board(board, squares=squares, size=350, check=chess.B8, arrows=[chess.svg.Arrow(chess.E2, chess.F7),chess.svg.Arrow(chess.E8, chess.A4),chess.svg.Arrow(chess.B5, chess.B5),chess.svg.Arrow(chess.C6, chess.C6, color="red")])
+            
+            b = cairosvg.svg2png(bytestring=a, write_to=None)
+            c = plt.imread(BytesIO(b))
+            plt.imshow(c)
+
+            fig.canvas.draw()
+
+            text2_string.set(fen)
+            time.sleep(0.1)
+
+        else:
+            time.sleep(0.1)
+
+    print("Thread stopped")
 
 plot_widget.grid(row=0, column=0, rowspan = 2)
 
@@ -61,6 +110,11 @@ text3.grid(row=1, column=1)
 
 _thread.start_new_thread(update,())
 
+# Set signal before starting
+signal.signal(signal.SIGINT, quit)
+root.protocol("WM_DELETE_WINDOW", quit)
+
 # We don't have to use rospy.spin() because tk's mainloop is blocking anyway:
 # https://answers.ros.org/question/106781/rospy-and-tkinter-spin-and-mainloop/
 root.mainloop()
+sys.exit()
