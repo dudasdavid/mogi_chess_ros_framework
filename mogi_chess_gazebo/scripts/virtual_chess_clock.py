@@ -1,10 +1,15 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python3.8
 
 import rospy
 from std_msgs.msg import String
 
 def chess_clock_callback(msg):
-    data_to_send.data = "w"
+    if msg.data.split(";")[1] == "w":
+        data_to_send.data = "b"
+    elif msg.data.split(";")[1] == "b":
+        data_to_send.data = "w"
+    else:
+        print(f"ERROR - msg.data: {msg.data} contains invalid side")
     dataPub.publish(data_to_send)
 
 initial_value = "w"

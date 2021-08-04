@@ -517,7 +517,7 @@ class MoveGroupPythonInteface(object):
 
     # 8) Send clock trigger in gazebo simulation
     if self.simulation:
-      self.gazebo_clock_data_to_send.data = "triggered"
+      self.gazebo_clock_data_to_send.data = "triggered;%s" % side
       self.gazebo_clock_publisher.publish(self.gazebo_clock_data_to_send)
 
     # 9) Move up
