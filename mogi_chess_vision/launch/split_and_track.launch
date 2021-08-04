@@ -11,6 +11,9 @@
   <node name="aruco_detector" pkg="mogi_chess_vision" type="aruco_detector.py" respawn="false" output="screen">
   </node>
 
+  <node name="board_visualizer" pkg="mogi_chess_vision" type="board_visualizer.py" respawn="false" output="screen">
+  </node>
+
   <node name="split_and_track" pkg="mogi_chess_vision" type="split_and_track.py" respawn="false" output="screen">
     <rosparam subst_value="true">
       sim: $(arg sim)
