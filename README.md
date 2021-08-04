@@ -81,3 +81,8 @@ http://chess.fortherapy.co.uk/home/chess-piece-identification-technology/
 
 Note:
 manual player's promotion is always queen!
+
+Python dependencies:
+sudo apt-get install python3-tk
+python3.8 -m pip install chess
+python3.8 -m pip install cairoSVG
