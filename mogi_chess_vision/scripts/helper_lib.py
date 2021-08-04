@@ -418,12 +418,14 @@ def track_fen(prev_fen, new_guess):
 
                 else:
                     print(f"ERROR: invalid en passant! Fields {new_empty[0]} and {new_empty[1]} are empty, {new_occupied[0]} is occupied and possible en passant from FEN is {prev_fen_split[3]}!")
+                    return "invalid", "invalid"
 
                 end = new_occupied[0]
                 print(f"En passant happened, side {side} moved")
             
             else:
                 print(f"ERROR: some strange invalid en passant happened!")
+                return "invalid", "invalid"
 
 
         elif piece1 in 'kK' and piece2 in 'rR':
