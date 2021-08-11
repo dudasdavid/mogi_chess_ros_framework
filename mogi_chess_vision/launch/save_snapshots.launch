@@ -1,0 +1,11 @@
+<launch>
+
+  <arg name="sim" default="false"/>
+
+  <node name="save_snapshots" pkg="mogi_chess_vision" type="save_snapshots.py" respawn="false" output="screen">
+    <rosparam subst_value="true">
+      sim: $(arg sim)
+    </rosparam>
+  </node>
+
+</launch>
