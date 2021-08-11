@@ -4,3 +4,4 @@ mogi_chess_vision/samples/**/*.jpg
 mogi_chess_vision/samples_sim/**/*.jpg
 mogi_chess_vision/samples_simple/**/*.jpg
 mogi_chess_vision/samples_simple_sim/**/*.jpg
+mogi_chess_vision/extra_samples/*.jpg
