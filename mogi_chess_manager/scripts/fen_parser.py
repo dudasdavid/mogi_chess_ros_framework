@@ -62,6 +62,7 @@ def fen_diff(fen_prev, fen_next):
 def can_move_low(fen, start, end):
     print(f"Decide if low movement is possible! Start: {start}, end: {end}")
 
+    # detect vertical movement, e.g. e2 -> e4
     if start[0] == end[0]:
         print("Vertical movement detected!")
         if abs(int(start[1]) - int(end[1])) == 1:
@@ -91,6 +92,7 @@ def can_move_low(fen, start, end):
         else:
             return False
 
+    # detect horizontal movement, e.g. a1 -> c1
     elif start[1] == end[1]:
         print("Horizontal movement detected!")
         if abs(ord(start[0]) - ord(end[0])) == 1:
@@ -120,7 +122,14 @@ def can_move_low(fen, start, end):
         else:
             return False
 
-    #TODO: diagonal movement detection
+    # detect diagonal movement increasing to the right, e.g. a1 -> c3 or h5 -> f3
+    elif ord(start[0]) - start[1] == ord(end[0]) - end[1]:
+        print("Diagonal movement to the right detected!")
+
+    # detect diagonal movement increasing to the left, e.g. a8 -> g2 or c5 -> a7
+    elif ord(start[0]) + start[1] == ord(end[0]) + end[1]:
+        print("Diagonal movement to the left detected!")
+
     else:
         print("Low movement is not possible!")
 
