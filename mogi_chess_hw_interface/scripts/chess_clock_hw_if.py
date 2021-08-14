@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python3.8
 
 import time
 import serial
@@ -15,11 +15,15 @@ class ChessClockNode:
         self.side = "x"
         self.commandQueue = []
         self.clock_started = False
+        self.last_time = 0
+        self.white_time = 0
+        self.black_time = 0
                     
     def main(self):                      
                            
         rospy.init_node('mogi_chess_clock')
         self.dataPub  = rospy.Publisher('/mogi_chess_clock/side', String, queue_size=1)
+        self.timePub  = rospy.Publisher('/mogi_chess_clock/time', String, queue_size=1)
         self.nodeName = rospy.get_name()
         rospy.loginfo("{0} started".format(self.nodeName))
 
@@ -45,8 +49,11 @@ class ChessClockNode:
         # Add an initial start clock command
         self.commandQueue.append("SPP")
 
-        # there is a 0.01 wait time in USB comm thread
-        self.commThread = periodic(self.chessClockCommThread, (1.0/self.serialRate)-0.01, "Comm")
+        # initialize internal timer
+        self.last_time = time.time()
+
+        # there is a 0.02 wait time in USB comm thread
+        self.commThread = periodic(self.chessClockCommThread, (1.0/self.serialRate)-0.02, "Comm")
         self.commThread.start()
 
         rate = rospy.Rate(self.publishRate)
@@ -66,7 +73,8 @@ class ChessClockNode:
 
         self.data_to_send.data = self.side
         self.dataPub.publish(self.data_to_send)
-
+        self.data_to_send.data = f"{self.white_time};{self.black_time}"
+        self.timePub.publish(self.data_to_send)
 
     def chessClockCommThread(self):
      
@@ -98,10 +106,14 @@ class ChessClockNode:
                         print(">>CLOCK STARTED")
                         self.clock_started = True
                     elif message == "1" or message == "0":
+                        curr_time = time.time()
                         if message == "1":
                             self.side = "w"
+                            self.white_time += curr_time - self.last_time
                         else:
                             self.side = "b"
+                            self.black_time += curr_time - self.last_time
+                        self.last_time = curr_time
 
                     else:
                         print(">>INVALID COMMAND: %s" % out)
@@ -109,6 +121,7 @@ class ChessClockNode:
                     pass
                     print(">>NOT OK: %s" % out)
 
+            # if clock starting somehow doesn't happen, let's try it again
             if self.clock_started == False and "SPP" not in self.commandQueue:
                 print("Adding clock start again!")
                 self.commandQueue.append("SPP")
