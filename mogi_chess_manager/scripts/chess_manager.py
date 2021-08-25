@@ -111,7 +111,11 @@ def calculate_robot_request(fen, move, side):
     # Detect normal hit:
     if target_piece != "-":
         print("Hit happened!")
-        movement_str = f"{side};x;{move[2:4]};{hit_slot};{move[:2]};{move[2:4]}"
+        low_move, orientation = fen_parser.can_move_low(fen, move[:2], move[2:4])
+        if low_move:
+            movement_str = f"{side};xl;{move[2:4]};{hit_slot};{move[:2]};{move[2:4]};{orientation}"
+        else:
+            movement_str = f"{side};x;{move[2:4]};{hit_slot};{move[:2]};{move[2:4]}"
         hit_slot += 1
         hit_list.append(target_piece)
         return movement_str

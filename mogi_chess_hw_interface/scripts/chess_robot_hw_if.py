@@ -262,6 +262,25 @@ class MoveGroupPythonInteface(object):
         self.go_and_drop((x,y))
         self.push_the_clock(side)
         self.go_to_home()
+    # hit but low movement
+    elif cmd_list[1] == "xl":
+        hit_start = cmd_list[2]
+        hit_id = cmd_list[3]
+        start = cmd_list[4]
+        end = cmd_list[5]
+        orientation = int(cmd_list[6])
+        x = self.columns[hit_start[0]]
+        y = self.rows[hit_start[1]]
+        self.go_and_grab((x,y))
+        self.go_and_drop(self.drop_slots[int(hit_id)], orientation = 90)
+        x = self.columns[start[0]]
+        y = self.rows[start[1]]
+        self.go_and_grab((x,y), low = True, orientation = orientation)
+        x = self.columns[end[0]]
+        y = self.rows[end[1]]
+        self.go_and_drop((x,y), low = True, orientation = orientation)
+        self.push_the_clock(side)
+        self.go_to_home()
     # castling
     elif cmd_list[1] == "c":
         start1 = cmd_list[2]
