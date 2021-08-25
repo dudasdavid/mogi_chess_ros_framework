@@ -205,7 +205,7 @@ class MoveGroupPythonInteface(object):
     self.robot_is_moving = False
 
     self.clock_z_up = self.z_table_offset + 0.07
-    self.clock_z_down = self.z_table_offset + 0.037
+    self.clock_z_down = self.z_table_offset + 0.038
     self.clock_x_b = 0.260
     self.clock_y_b = 0.300
     self.clock_x_w = 0.260
