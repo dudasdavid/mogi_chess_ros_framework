@@ -211,7 +211,8 @@ hit_list = []
 
 # Set up ROS stuff
 status_pub = rospy.Publisher('chess_status', String, queue_size=1)
-fen_pub = rospy.Publisher('chess_manager/fen', String, queue_size=1)
+# set latch flag to true, to make sure that the initial FEN is available for subscribers at start
+fen_pub = rospy.Publisher('chess_manager/fen', String, queue_size=1, latch=True)
 s_read = rospy.Service('read_status', ReadStatus, serve_read_status)
 s_move = rospy.Service('make_movement', MakeMovement, serve_movement)
 s_invalid_move = rospy.Service('make_invalid_movement', MakeInvalidMovement, serve_invalid_movement)
