@@ -126,12 +126,70 @@ def can_move_low(fen, start, end):
     # detect diagonal movement increasing to the right, e.g. a1 -> c3 or h5 -> f3
     elif ord(start[0]) - int(start[1]) == ord(end[0]) - int(end[1]):
         print("Diagonal movement to the right detected!")
-        # TODO
+        if abs(ord(start[0]) - ord(end[0])) == 1:
+            print("Only one square movement, low movement is possible!")
+            return True, 135
+
+        elif ord(start[0]) < ord(end[0]):
+            print(f"Column of start {start} is lower than end {end}")
+            is_empty = True
+            j = 0
+            for i in range(ord(start[0]) + 1, ord(end[0])):
+                if get_piece(fen, chr(i) + str(int(start[1]) + j)) != "-":
+                    is_empty = False
+                j +=1
+
+        elif ord(start[0]) > ord(end[0]):
+            print(f"Column of start {start} is higher than end {end}")
+            is_empty = True
+            j = 0
+            for i in range(ord(end[0]) + 1, ord(start[0])):
+                if get_piece(fen, chr(i) + str(int(end[1]) + j)) != "-":
+                    is_empty = False
+                j +=1
+
+        else:
+            print("Diagonal right movement detection error!")
+            return False, 45
+
+        if is_empty:
+            return True, 135
+        else:
+            return False, 45
 
     # detect diagonal movement increasing to the left, e.g. a8 -> g2 or c5 -> a7
     elif ord(start[0]) + int(start[1]) == ord(end[0]) + int(end[1]):
         print("Diagonal movement to the left detected!")
-        # TODO
+        if abs(ord(start[0]) - ord(end[0])) == 1:
+            print("Only one square movement, low movement is possible!")
+            return True, 45
+
+        elif ord(start[0]) < ord(end[0]):
+            print(f"Column of start {start} is lower than end {end}")
+            is_empty = True
+            j = 0
+            for i in range(ord(start[0]) + 1, ord(end[0])):
+                if get_piece(fen, chr(i) + str(int(start[1]) - j)) != "-":
+                    is_empty = False
+                j +=1
+
+        elif ord(start[0]) > ord(end[0]):
+            print(f"Column of start {start} is higher than end {end}")
+            is_empty = True
+            j = 0
+            for i in range(ord(end[0]) + 1, ord(start[0])):
+                if get_piece(fen, chr(i) + str(int(end[1]) - j)) != "-":
+                    is_empty = False
+                j +=1
+
+        else:
+            print("Diagonal right movement detection error!")
+            return False, 45
+
+        if is_empty:
+            return True, 45
+        else:
+            return False, 45
 
     else:
         print("Low movement is not possible!")
