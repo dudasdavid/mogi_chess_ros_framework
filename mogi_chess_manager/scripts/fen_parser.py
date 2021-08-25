@@ -67,7 +67,8 @@ def can_move_low(fen, start, end):
         print("Vertical movement detected!")
         if abs(int(start[1]) - int(end[1])) == 1:
             print("Only one square movement, low movement is possible!")
-            return True
+            # low movement is possible, desired orientation is 0 degree
+            return True, 0
 
         elif int(start[1]) < int(end[1]):
             print(f"Rank of start {start} is lower than end {end}")
@@ -85,19 +86,19 @@ def can_move_low(fen, start, end):
 
         else:
             print("Vertical low movement detection error!")
-            return False
+            return False, 45
 
         if is_empty:
-            return True
+            return True, 0
         else:
-            return False
+            return False, 45
 
     # detect horizontal movement, e.g. a1 -> c1
     elif start[1] == end[1]:
         print("Horizontal movement detected!")
         if abs(ord(start[0]) - ord(end[0])) == 1:
             print("Only one square movement, low movement is possible!")
-            return True
+            return True, 90
 
         elif ord(start[0]) < ord(end[0]):
             print(f"Column of start {start} is lower than end {end}")
@@ -115,23 +116,25 @@ def can_move_low(fen, start, end):
 
         else:
             print("Horizontal low movement detection error!")
-            return False
+            return False, 45
 
         if is_empty:
-            return True
+            return True, 90
         else:
-            return False
+            return False, 45
 
     # detect diagonal movement increasing to the right, e.g. a1 -> c3 or h5 -> f3
-    elif ord(start[0]) - start[1] == ord(end[0]) - end[1]:
+    elif ord(start[0]) - int(start[1]) == ord(end[0]) - int(end[1]):
         print("Diagonal movement to the right detected!")
+        # TODO
 
     # detect diagonal movement increasing to the left, e.g. a8 -> g2 or c5 -> a7
-    elif ord(start[0]) + start[1] == ord(end[0]) + end[1]:
+    elif ord(start[0]) + int(start[1]) == ord(end[0]) + int(end[1]):
         print("Diagonal movement to the left detected!")
+        # TODO
 
     else:
         print("Low movement is not possible!")
 
-    return False
+    return False, 45
 
