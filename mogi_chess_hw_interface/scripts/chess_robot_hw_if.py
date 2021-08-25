@@ -235,12 +235,13 @@ class MoveGroupPythonInteface(object):
     elif cmd_list[1] == "nl":
         start = cmd_list[2]
         end = cmd_list[3]
+        orientation = int(cmd_list[4])
         x = self.columns[start[0]]
         y = self.rows[start[1]]
-        self.go_and_grab((x,y), low = True)
+        self.go_and_grab((x,y), low = True, orientation = orientation)
         x = self.columns[end[0]]
         y = self.rows[end[1]]
-        self.go_and_drop((x,y), low = True)
+        self.go_and_drop((x,y), low = True, orientation = orientation)
         self.push_the_clock(side)
         self.go_to_home()
     # hit
@@ -252,7 +253,7 @@ class MoveGroupPythonInteface(object):
         x = self.columns[hit_start[0]]
         y = self.rows[hit_start[1]]
         self.go_and_grab((x,y))
-        self.go_and_drop(self.drop_slots[int(hit_id)], True)
+        self.go_and_drop(self.drop_slots[int(hit_id)], orientation = 90)
         x = self.columns[start[0]]
         y = self.rows[start[1]]
         self.go_and_grab((x,y))
@@ -296,7 +297,7 @@ class MoveGroupPythonInteface(object):
         x = self.columns[hit_start[0]]
         y = self.rows[hit_start[1]]
         self.go_and_grab((x,y))
-        self.go_and_drop(self.drop_slots[int(hit_id)], True)
+        self.go_and_drop(self.drop_slots[int(hit_id)], orientation = 90)
         self.push_the_clock(side)
         self.go_to_home()
     # promotion
@@ -305,14 +306,14 @@ class MoveGroupPythonInteface(object):
         promotion_end = cmd_list[3]
         hit_start = cmd_list[4]
         hit_id = cmd_list[5]
-        self.go_and_grab(self.drop_slots[int(promotion_id)], True)
+        self.go_and_grab(self.drop_slots[int(promotion_id)], orientation = 90)
         x = self.columns[promotion_end[0]]
         y = self.rows[promotion_end[1]]
         self.go_and_drop((x,y))
         x = self.columns[hit_start[0]]
         y = self.rows[hit_start[1]]
         self.go_and_grab((x,y))
-        self.go_and_drop(self.drop_slots[int(hit_id)], True)
+        self.go_and_drop(self.drop_slots[int(hit_id)], orientation = 90)
         self.push_the_clock(side)
         self.go_to_home()
     # promotion, but promoted piece is not available on the table!
@@ -322,7 +323,7 @@ class MoveGroupPythonInteface(object):
         x = self.columns[hit_start[0]]
         y = self.rows[hit_start[1]]
         self.go_and_grab((x,y))
-        self.go_and_drop(self.drop_slots[int(hit_id)], True)
+        self.go_and_drop(self.drop_slots[int(hit_id)], orientation = 90)
         self.push_the_clock(side)
         self.go_to_home()
 
@@ -430,26 +431,28 @@ class MoveGroupPythonInteface(object):
       self.gazebo_publisher.publish(self.gazebo_trajectory_command)
 
 
-  def go_and_grab(self, xy, out = False, low = False):
+  def go_and_grab(self, xy, low = False, orientation = 45):
 
     x = xy[0]
     y = xy[1]
-
-    if out:
-        orientation = 90
-    else:
-        orientation = 45
-
 
     # 0) Make sure that the gripper is open
     self.set_gripper("open")
 
     # 1.1) Go above end position
-    self.go_to_pose_goal(x, y, self.z_high, orientation)
+    if low == True:
+      # in case of low movement, let's keep the 45 degree gripper orientation
+      self.go_to_pose_goal(x, y, self.z_high, 45)
+    else:
+      self.go_to_pose_goal(x, y, self.z_high, orientation)
     rospy.sleep(self.wait_time)
 
     # 1.2) Go down
-    self.go_to_pose_goal_cartesian(x, y, self.z_low, orientation)
+    if low == True:
+      # in case of low movement, still keep the 45 degree gripper orientation
+      self.go_to_pose_goal_cartesian(x, y, self.z_low, 45)
+    else:
+      self.go_to_pose_goal_cartesian(x, y, self.z_low, orientation)
     rospy.sleep(self.wait_time)
 
     # 1.3) Grab the figure
@@ -464,17 +467,10 @@ class MoveGroupPythonInteface(object):
     rospy.sleep(self.wait_time)
 
 
-  def go_and_drop(self, xy, out = False, low = False):
+  def go_and_drop(self, xy, low = False, orientation = 45):
 
     x = xy[0]
     y = xy[1]
-
-    if out:
-        orientation = 90
-        z_drop = self.z_drop_to_table
-    else:
-        orientation = 45
-        z_drop = self.z_drop
 
     # 6) Go above end position
     if low == True:
@@ -485,7 +481,7 @@ class MoveGroupPythonInteface(object):
       rospy.sleep(self.wait_time)
 
       # 7) Move down
-      self.go_to_pose_goal_cartesian(x, y, z_drop, orientation)
+      self.go_to_pose_goal_cartesian(x, y, self.z_drop, orientation)
       rospy.sleep(self.wait_time)
 
     # 8) Open gripper
@@ -493,7 +489,11 @@ class MoveGroupPythonInteface(object):
     rospy.sleep(self.gripper_wait_time)
 
     # 9) Move up
-    self.go_to_pose_goal_cartesian(x, y, self.z_high, orientation)
+    if low == True:
+      # in case of low movement, let's return to 45 degrees gripper angle
+      self.go_to_pose_goal_cartesian(x, y, self.z_high, 45)
+    else:
+      self.go_to_pose_goal_cartesian(x, y, self.z_high, orientation)
     rospy.sleep(self.wait_time)
 
   def push_the_clock(self, side):
@@ -699,12 +699,23 @@ class MoveGroupPythonInteface(object):
     ## end-effector:
     pose_goal = geometry_msgs.msg.Pose()
     # set proper quaternion for the vertical orientation: https://quaternions.online/
+    # 0   = |
+    # 45  = \
+    # 90  = -
+    # 135 = /
     if orientation == 90:
-      # 90 deg gripper position during dropping the pieces
+      # 90 deg gripper position is used during dropping the pieces
       pose_goal.orientation.x = -0.707
       pose_goal.orientation.y = 0.707
+    elif orientation == 0:
+      pose_goal.orientation.x = 0.0
+      pose_goal.orientation.y = 1.0
+
+    elif orientation == 135:
+      pose_goal.orientation.x = -0.924
+      pose_goal.orientation.y = 0.383
     else:
-      # default 45 deg gripper position
+      # default 45 deg gripper position for grabbing
       pose_goal.orientation.x = -0.383
       pose_goal.orientation.y = 0.924
     
@@ -734,16 +745,22 @@ class MoveGroupPythonInteface(object):
     ## end-effector:
     #pose_goal = geometry_msgs.msg.Pose()
     # set proper quaternion for the vertical orientation: https://quaternions.online/
+    # 0   = |
+    # 45  = \
+    # 90  = -
+    # 135 = /
     if orientation == 90:
       # 90 deg gripper position during dropping the pieces
-      #pose_goal.orientation.x = -0.707
-      #pose_goal.orientation.y = 0.707
       orientation_x = -0.707
       orientation_y = 0.707
+    elif orientation == 0:
+      orientation_x= 0.0
+      orientation_y = 1.0
+    elif orientation == 135:
+      orientation_x = -0.924
+      orientation_y = 0.383
     else:
       # default 45 deg gripper position
-      #pose_goal.orientation.x = -0.383
-      #pose_goal.orientation.y = 0.924
       orientation_x = -0.383
       orientation_y = 0.924
     
