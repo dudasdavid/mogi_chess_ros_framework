@@ -377,6 +377,10 @@ def track_fen(prev_fen, new_guess):
                         else:
                             print(f"{i} doesn't match with new {fen_side} occupied {side_appeared}")
                             end = "invalid_hit"
+                    else:
+                        print(f"{i} doesn't match with new {fen_side} empty {new_empty[0]}")
+                        end = "invalid_hit"
+
             elif len(side_appeared) == 0:
                 print(f"A piece suddenly disappeared from {new_empty}, put it back now!")
                 return "invalid", "invalid"
@@ -396,7 +400,8 @@ def track_fen(prev_fen, new_guess):
         piece1 = get_piece(prev_fen_split[0], new_empty[0])
         piece2 = get_piece(prev_fen_split[0], new_empty[1])
 
-        if piece1 in 'pP' and piece2 in 'pP':
+        # statement was extended with length check of new_occupied to fix real life misdetections and list index out of range errors
+        if piece1 in 'pP' and piece2 in 'pP' and len(new_occupied) > 0:
             
             # prev_fen_split[3] indicates if there is a possible en passant
             # e.g rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2
