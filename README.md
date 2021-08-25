@@ -75,6 +75,9 @@ rosrun mogi_chess_gazebo virtual_chess_clock.py
 
 move the pieces in Gazebo
 
+# save additional extra samples:
+roslaunch mogi_chess_vision save_snapshots.launch
+
 
 # Useful links:
 http://chess.fortherapy.co.uk/home/chess-piece-identification-technology/
