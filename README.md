@@ -63,7 +63,7 @@ BRINGUP
 roslaunch mogi_chess_manager manager.launch
 roslaunch mogi_chess_vision split_and_track.launch
 roslaunch mogi_chess_manager manual_player.launch
-roslaunch mogi_chess_manager stockfish_player.launch side:=b
+roslaunch mogi_chess_manager stockfish_player.launch side:=b level:=20
 
 ### Gazebo
 BRINGUP
