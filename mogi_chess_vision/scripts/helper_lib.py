@@ -407,14 +407,14 @@ def track_fen(prev_fen, new_guess):
             # e.g rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2
             # e6 is potential en passant
             if new_occupied[0] == prev_fen_split[3]:
-                if int(new_empty[0][1]) == 4 and int(new_empty[1][2]) == 4:
+                if int(new_empty[0][1]) == 4 and int(new_empty[1][1]) == 4:
                     side = 'b'
                     if piece1 == 'p':
                         start = new_empty[0]
                     else:
                         start = new_empty[1]
 
-                elif int(new_empty[0][1]) == 5 and int(new_empty[1][2]) == 5:
+                elif int(new_empty[0][1]) == 5 and int(new_empty[1][1]) == 5:
                     side = 'w'
                     if piece1 == 'P':
                         start = new_empty[0]
