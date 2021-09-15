@@ -133,8 +133,9 @@ def can_move_low(fen, start, end):
         elif ord(start[0]) < ord(end[0]):
             print(f"Column of start {start} is lower than end {end}")
             is_empty = True
-            j = 0
+            j = 1
             for i in range(ord(start[0]) + 1, ord(end[0])):
+                print(f"Checking square: {chr(i)}{str(int(start[1]) + j)}, result: {get_piece(fen, chr(i) + str(int(start[1]) + j))}")
                 if get_piece(fen, chr(i) + str(int(start[1]) + j)) != "-":
                     is_empty = False
                 j +=1
@@ -142,8 +143,9 @@ def can_move_low(fen, start, end):
         elif ord(start[0]) > ord(end[0]):
             print(f"Column of start {start} is higher than end {end}")
             is_empty = True
-            j = 0
+            j = 1
             for i in range(ord(end[0]) + 1, ord(start[0])):
+                print(f"Checking square: {chr(i)}{str(int(end[1]) + j)}, result: {get_piece(fen, chr(i) + str(int(end[1]) + j))}")
                 if get_piece(fen, chr(i) + str(int(end[1]) + j)) != "-":
                     is_empty = False
                 j +=1
@@ -167,8 +169,9 @@ def can_move_low(fen, start, end):
         elif ord(start[0]) < ord(end[0]):
             print(f"Column of start {start} is lower than end {end}")
             is_empty = True
-            j = 0
+            j = 1
             for i in range(ord(start[0]) + 1, ord(end[0])):
+                print(f"Checking square: {chr(i)}{str(int(start[1]) - j)}, result: {get_piece(fen, chr(i) + str(int(start[1]) - j))}")
                 if get_piece(fen, chr(i) + str(int(start[1]) - j)) != "-":
                     is_empty = False
                 j +=1
@@ -176,8 +179,9 @@ def can_move_low(fen, start, end):
         elif ord(start[0]) > ord(end[0]):
             print(f"Column of start {start} is higher than end {end}")
             is_empty = True
-            j = 0
+            j = 1
             for i in range(ord(end[0]) + 1, ord(start[0])):
+                print(f"Checking square: {chr(i)}{str(int(end[1]) - j)}, result: {get_piece(fen, chr(i) + str(int(end[1]) - j))}")
                 if get_piece(fen, chr(i) + str(int(end[1]) - j)) != "-":
                     is_empty = False
                 j +=1
