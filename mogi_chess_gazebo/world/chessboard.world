@@ -490,7 +490,7 @@
           </inertia>
           <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
-        <pose frame=''>0 0.32 1.095 0 -0 1.5708</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
         <gravity>1</gravity>
         <self_collide>0</self_collide>
         <kinematic>0</kinematic>
@@ -553,7 +553,7 @@
           </inertia>
           <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
-        <pose frame=''>0 0.32 1.005 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
         <gravity>1</gravity>
         <self_collide>0</self_collide>
         <kinematic>0</kinematic>
@@ -675,7 +675,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.131 0.415 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='pawn_white1'>
@@ -753,7 +753,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.094 0.415 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='pawn_white2'>
@@ -831,7 +831,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.056 0.415 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='pawn_white3'>
@@ -909,7 +909,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.019 0.415 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='pawn_white4'>
@@ -987,7 +987,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.019 0.415 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='pawn_white5'>
@@ -1065,7 +1065,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.056 0.415 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='pawn_white6'>
@@ -1143,7 +1143,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.094 0.415 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='pawn_white7'>
@@ -1221,7 +1221,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.131 0.415 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='rook_white0'>
@@ -1299,7 +1299,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.131 0.453 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='rook_white1'>
@@ -1377,7 +1377,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.131 0.453 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='knight_white0'>
@@ -1455,7 +1455,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.094 0.453 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='knight_white1'>
@@ -1533,7 +1533,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.094 0.453 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='bishop_white0'>
@@ -1614,7 +1614,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.056 0.453 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='bishop_white1'>
@@ -1695,7 +1695,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.056 0.453 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='king_white0'>
@@ -1773,7 +1773,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.019 0.453 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='queen_white0'>
@@ -1851,7 +1851,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.019 0.453 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='pawn_black0'>
@@ -1929,7 +1929,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.131 0.228 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='pawn_black1'>
@@ -2007,7 +2007,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.094 0.228 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='pawn_black2'>
@@ -2085,7 +2085,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.056 0.228 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='pawn_black3'>
@@ -2163,7 +2163,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.019 0.228 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='pawn_black4'>
@@ -2241,7 +2241,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.019 0.228 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='pawn_black5'>
@@ -2319,7 +2319,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.056 0.228 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='pawn_black6'>
@@ -2397,7 +2397,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.094 0.228 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='pawn_black7'>
@@ -2475,7 +2475,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.131 0.228 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='rook_black0'>
@@ -2553,7 +2553,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.131 0.19 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='rook_black1'>
@@ -2631,7 +2631,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.131 0.19 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='knight_black0'>
@@ -2709,7 +2709,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.094 0.19 1.105 0 -0 3.1415</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='knight_black1'>
@@ -2787,7 +2787,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.094 0.19 1.105 0 -0 3.1415</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='bishop_black0'>
@@ -2865,7 +2865,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.056 0.19 1.105 0 -0 3.1415</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='bishop_black1'>
@@ -2943,7 +2943,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.056 0.19 1.105 0 -0 3.1415</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='king_black0'>
@@ -3021,7 +3021,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>-0.019 0.19 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <model name='queen_black0'>
@@ -3099,7 +3099,7 @@
             <bounce/>
           </surface>
         </collision>
-        <pose frame=''>0.019 0.19 1.105 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
       </link>
     </model>
     <state world_name='default'>
