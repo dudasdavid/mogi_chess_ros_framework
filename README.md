@@ -69,9 +69,9 @@ roslaunch mogi_chess_manager stockfish_player.launch side:=b level:=20
 BRINGUP
 roslaunch mogi_chess_manager manager.launch sim:=true
 roslaunch mogi_chess_vision split_and_track.launch sim:=true
+rosrun mogi_chess_gazebo virtual_chess_clock.py
 roslaunch mogi_chess_manager manual_player.launch
 roslaunch mogi_chess_manager stockfish_player.launch side:=b
-rosrun mogi_chess_gazebo virtual_chess_clock.py
 
 move the pieces in Gazebo
 
@@ -89,3 +89,9 @@ Python dependencies:
 sudo apt-get install python3-tk
 python3.8 -m pip install chess
 python3.8 -m pip install cairoSVG
+
+
+
+### UPDATE:
+roslaunch ur_gazebo ur3e_bringup.launch (gazebo_world:='$(find mogi_chess_gazebo)/world/chessboard.world' spawn_z:=1.02)
+roslaunch ur3e_moveit_config ur3e_moveit_planning_execution.launch sim:=true
