@@ -3,5 +3,9 @@ robot_board_offsets:
   y: 0.190
   z: 0.115
 
+board_dimensions:
+  x_increment: 0.0375
+  y_increment: 0.0375
+
 specific_joint_angles:
   home: "1 1 1 1 1 1"

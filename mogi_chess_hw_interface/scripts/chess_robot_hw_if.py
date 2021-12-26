@@ -131,15 +131,15 @@ class MoveGroupPythonInteface(object):
     # Getting Basic Information
     # We can get the name of the reference frame for this robot:
     planning_frame = move_group.get_planning_frame()
-    print "============ Planning frame: %s" % planning_frame
+    print("============ Planning frame: %s" % planning_frame)
 
     # We can also print the name of the end-effector link for this group:
     eef_link = move_group.get_end_effector_link()
-    print "============ End effector link: %s" % eef_link
+    print("============ End effector link: %s" % eef_link)
 
     # We can get a list of all the groups in the robot:
     group_names = robot.get_group_names()
-    print "============ Available Planning Groups:", robot.get_group_names()
+    print("============ Available Planning Groups:", robot.get_group_names())
 
     # Sometimes for debugging it is useful to print the entire state of the
     # robot:
@@ -176,13 +176,15 @@ class MoveGroupPythonInteface(object):
     # Chess related variables
     ### THESE VALUES ARE SET BASED ON BOARD AND TABLE
     # Y coordinate
-    y_increment = 0.038
-    y_offset = robot_params['robot_board_offsets']['y']
+    y_increment = robot_params['board_dimensions']['y_increment'] # 0.0375
+    y_offset = robot_params['robot_board_offsets']['y'] # distance from table
     #self.rows = {"1": 0.453, "2": 0.415, "3": 0.378, "4": 0.340, "5": 0.303, "6": 0.265, "7": 0.228, "8": 0.190}
     self.rows = {"1": y_offset+7*y_increment, "2": y_offset+6*y_increment, "3": y_offset+5*y_increment, "4": y_offset+4*y_increment, "5": y_offset+3*y_increment, "6": y_offset+2*y_increment, "7": y_offset+1*y_increment, "8": y_offset}
     
     # X coordinate
-    self.columns  = {"a": 0.131, "b": 0.094, "c": 0.056, "d": 0.019, "e": -0.019, "f": -0.056, "g": -0.094, "h": -0.131}
+    x_increment = robot_params['board_dimensions']['x_increment'] # 0.0375
+    x_offset = robot_params['robot_board_offsets']['x'] # should be 0 if arm is in the center
+    self.columns  = {"a": x_offset + 3.5*x_increment, "b": x_offset + 2.5*x_increment, "c": x_offset + 1.5*x_increment, "d": x_offset + 0.5*x_increment, "e": x_offset - 0.5*x_increment, "f": x_offset - 1.5*x_increment, "g": x_offset - 2.5*x_increment, "h": x_offset - 3.5*x_increment}
 
     self.z_table_offset = robot_params['robot_board_offsets']['z'] #0.115 # THIS MUST BE SET TO THE REAL TABLE!
     ### THESE VALUES ARE SET BASED ON FIGURES
@@ -225,11 +227,11 @@ class MoveGroupPythonInteface(object):
     self.clock_z_up = self.z_table_offset + 0.07
     self.clock_z_down = self.z_table_offset + 0.038
     self.clock_x_b = 0.260
-    y_clock_black = 0.110
-    self.clock_y_b = y_offset + y_clock_black #0.300
+    y_clock_black_offset = 0.110
+    self.clock_y_b = y_offset + y_clock_black_offset #0.300
     self.clock_x_w = 0.260
-    y_clock_white = 0.190
-    self.clock_y_w = y_offset + y_clock_white #0.380
+    y_clock_white_offset = y_clock_black_offset + 0.080 # black and white buttons are 8cm apart
+    self.clock_y_w = y_offset + y_clock_white_offset #0.380
 
   def serve_robot_status(self, req):
       return RobotStatusResponse(self.robot_is_moving)
