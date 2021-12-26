@@ -95,3 +95,8 @@ python3.8 -m pip install cairoSVG
 ### UPDATE:
 roslaunch ur_gazebo ur3e_bringup.launch (gazebo_world:='$(find mogi_chess_gazebo)/world/chessboard.world' spawn_z:=1.02)
 roslaunch ur3e_moveit_config ur3e_moveit_planning_execution.launch sim:=true
+
+### UR5e:
+roslaunch ur_gazebo ur5e_bringup.launch spawn_y:=-0.3
+roslaunch ur5e_moveit_config ur5e_moveit_planning_execution.launch sim:=true
+roslaunch mogi_chess_manager manager.launch sim:=true config:=ur5e.yaml

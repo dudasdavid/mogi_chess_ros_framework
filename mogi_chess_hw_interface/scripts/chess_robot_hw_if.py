@@ -18,6 +18,8 @@ from moveit_msgs.msg import RobotState, Constraints
 from gazebo_msgs.msg import ContactsState
 from gazebo_ros_link_attacher.srv import Attach, AttachRequest, AttachResponse
 from mogi_chess_msgs.srv import RobotCommand, RobotCommandResponse, RobotStatus, RobotStatusResponse
+import yaml
+import rospkg
 
 def all_close(goal, actual, tolerance):
   """
@@ -55,6 +57,19 @@ class MoveGroupPythonInteface(object):
         self.simulation = True
     else:
         self.simulation = False
+
+    param_config = rospy.get_param('~config', "ur3e.yaml")
+
+    rospack = rospkg.RosPack()
+    path = rospack.get_path('mogi_chess_hw_interface')
+    configfile = path + "/config/" + param_config
+    print("Robot config file: %s" % configfile)
+
+    with open(configfile, "r") as stream:
+      try:
+          robot_params = yaml.safe_load(stream)
+      except yaml.YAMLError as exc:
+          print(exc)
 
     ## Instantiate a `RobotCommander`_ object. Provides information such as the robot's
     ## kinematic model and the robot's current joint states
@@ -161,12 +176,15 @@ class MoveGroupPythonInteface(object):
     # Chess related variables
     ### THESE VALUES ARE SET BASED ON BOARD AND TABLE
     # Y coordinate
-    self.rows = {"1": 0.453, "2": 0.415, "3": 0.378, "4": 0.340, "5": 0.303, "6": 0.265, "7": 0.228, "8": 0.190}
+    y_increment = 0.038
+    y_offset = robot_params['robot_board_offsets']['y']
+    #self.rows = {"1": 0.453, "2": 0.415, "3": 0.378, "4": 0.340, "5": 0.303, "6": 0.265, "7": 0.228, "8": 0.190}
+    self.rows = {"1": y_offset+7*y_increment, "2": y_offset+6*y_increment, "3": y_offset+5*y_increment, "4": y_offset+4*y_increment, "5": y_offset+3*y_increment, "6": y_offset+2*y_increment, "7": y_offset+1*y_increment, "8": y_offset}
     
     # X coordinate
     self.columns  = {"a": 0.131, "b": 0.094, "c": 0.056, "d": 0.019, "e": -0.019, "f": -0.056, "g": -0.094, "h": -0.131}
 
-    self.z_table_offset = 0.115 # THIS MUST BE SET TO THE REAL TABLE!
+    self.z_table_offset = robot_params['robot_board_offsets']['z'] #0.115 # THIS MUST BE SET TO THE REAL TABLE!
     ### THESE VALUES ARE SET BASED ON FIGURES
     self.z_high = self.z_table_offset + 0.06 #0.222
     self.z_low = self.z_table_offset + 0.01 #0.17
@@ -207,9 +225,11 @@ class MoveGroupPythonInteface(object):
     self.clock_z_up = self.z_table_offset + 0.07
     self.clock_z_down = self.z_table_offset + 0.038
     self.clock_x_b = 0.260
-    self.clock_y_b = 0.300
+    y_clock_black = 0.110
+    self.clock_y_b = y_offset + y_clock_black #0.300
     self.clock_x_w = 0.260
-    self.clock_y_w = 0.380
+    y_clock_white = 0.190
+    self.clock_y_w = y_offset + y_clock_white #0.380
 
   def serve_robot_status(self, req):
       return RobotStatusResponse(self.robot_is_moving)

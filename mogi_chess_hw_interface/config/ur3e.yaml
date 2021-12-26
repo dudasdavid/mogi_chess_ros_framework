@@ -1,0 +1,7 @@
+robot_board_offsets:
+  x: 0
+  y: 0.190
+  z: 0.115
+
+specific_joint_angles:
+  home: "1 1 1 1 1 1"

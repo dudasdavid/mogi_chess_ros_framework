@@ -3,11 +3,13 @@
 <launch>
 
   <arg name="sim" default="false"/>
+  <arg name="config" default="ur3e.yaml"/>
   <arg name="save" default="false"/>
 
   <!-- Launch the HW interface -->
   <include file="$(find mogi_chess_hw_interface)/launch/robot_interface.launch">
     <arg name="sim" value="$(arg sim)"/>
+    <arg name="config" value="$(arg config)"/>
   </include>
 
   <node name="mogi_chess_manager" pkg="mogi_chess_manager" type="chess_manager.py" output ="screen">
