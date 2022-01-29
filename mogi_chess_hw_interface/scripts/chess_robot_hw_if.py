@@ -921,7 +921,7 @@ def main():
     moveit_commander.move_group.set_goal_position_tolerance(0.0005)
     moveit_commander.move_group.set_goal_orientation_tolerance(0.001)
     
-    raw_input("============ Press `Enter` to go home...")
+    #raw_input("============ Press `Enter` to go home...")
     moveit_commander.go_to_home()
     while not rospy.is_shutdown():
       print("============ Select mode:")
