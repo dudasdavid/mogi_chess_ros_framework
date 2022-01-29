@@ -50,7 +50,7 @@
         <pose frame=''>0 0 0.015 0 0 0</pose>
         <geometry>
           <cylinder>
-            <radius>0.01</radius>
+            <radius>0.005</radius>
             <length>0.03</length>
           </cylinder>
         </geometry>
