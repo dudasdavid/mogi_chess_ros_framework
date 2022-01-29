@@ -440,7 +440,7 @@ class MoveGroupPythonInteface(object):
         # Real gripper value
         self.goal_position_msg.value = [560]
         # Gazebo gripper value
-        self.gazebo_trajectory_point.positions = [0.8]
+        self.gazebo_trajectory_point.positions = [0.9]
 
         if self.simulation:
           if self.attached == True:
@@ -460,7 +460,7 @@ class MoveGroupPythonInteface(object):
 
       else:
         self.goal_position_msg.value = [740]
-        self.gazebo_trajectory_point.positions = [1.135]
+        self.gazebo_trajectory_point.positions = [1.05]
         
 
       # Publish real gripper position
