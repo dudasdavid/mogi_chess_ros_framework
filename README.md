@@ -100,3 +100,13 @@ roslaunch ur3e_moveit_config ur3e_moveit_planning_execution.launch sim:=true
 roslaunch ur_gazebo ur5e_bringup.launch spawn_y:=-0.3
 roslaunch ur5e_moveit_config ur5e_moveit_planning_execution.launch sim:=true
 roslaunch mogi_chess_manager manager.launch sim:=true config:=ur5e.yaml
+
+
+### AUTO PLAY:
+roslaunch ur_gazebo ur3e_bringup.launch gazebo_world:='$(find mogi_chess_gazebo)/world/chessboard_black_wins.world'
+roslaunch ur3e_moveit_config ur3e_moveit_planning_execution.launch sim:=true
+
+roslaunch mogi_chess_hw_interface robot_interface.launch sim:=true
+
+bash autolaunch.bash
+(roslaunch mogi_chess_manager auto_manager.launch)

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <node name="mogi_chess_manager" pkg="mogi_chess_manager" type="chess_manager.py" output ="screen">
+    <rosparam subst_value="true">
+      save: false
+    </rosparam>
+  </node>
+
+  <node name="mogi_chess_stockfish_1" pkg="mogi_chess_manager" type="player.py" output ="screen">
+    <rosparam subst_value="true">
+      side: w
+      type: stockfish
+      level: 10
+      wait: 1
+    </rosparam>
+  </node>
+
+  <node name="mogi_chess_stockfish_2" pkg="mogi_chess_manager" type="player.py" output ="screen">
+    <rosparam subst_value="true">
+      side: b
+      type: stockfish
+      level: 20
+      wait: 10
+    </rosparam>
+  </node>
+
+</launch>
