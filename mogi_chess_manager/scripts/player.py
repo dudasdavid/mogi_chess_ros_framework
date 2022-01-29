@@ -6,7 +6,8 @@ from Chessnut import Game
 from stockfish import Stockfish
 import rospkg
 import time
-from mogi_chess_msgs.srv import ReadStatus, MakeMovement, ReadLastMove, MakeInvalidMovement
+import random
+from mogi_chess_msgs.srv import ReadStatus, MakeMovement, ReadLastMove, MakeInvalidMovement, PlayerWon
 
 def read_status_client():
     rospy.wait_for_service('read_status')
@@ -41,6 +42,15 @@ def make_invalid_movement_client():
         make_invalid_movement_service = rospy.ServiceProxy('make_invalid_movement', MakeInvalidMovement)
         resp1 = make_invalid_movement_service()
         return resp1.finished
+    except rospy.ServiceException as e:
+        print("Service call failed: %s"%e)
+
+def player_won_client(winner):
+    rospy.wait_for_service('player_won')
+    try:
+        player_won_service = rospy.ServiceProxy('player_won', PlayerWon)
+        resp1 = player_won_service(winner)
+        return resp1.success
     except rospy.ServiceException as e:
         print("Service call failed: %s"%e)
 
@@ -115,6 +125,9 @@ robot_move = True
 
 param_side = rospy.get_param('~side', "w")
 param_type = rospy.get_param('~type', "human")
+param_wait = rospy.get_param('~wait', "0")
+
+time.sleep(float(param_wait))
 
 clock_side = None
 
@@ -147,12 +160,14 @@ while not rospy.is_shutdown():
             print(30*"*")
             print("*          You won!          *")
             print(30*"*")
+            resp = player_won_client(f"{param_side} won.")
             break 
         else:
             # Only human player can lose here...
             print(30*"*")
             print("*         You lose!          *")
             print(30*"*")
+            resp = player_won_client(f"{param_side} lose.")
             break
 
     # If status is centipawns the game can go on
@@ -178,6 +193,7 @@ while not rospy.is_shutdown():
             print(30*"*")
             print("*         You lose!          *")
             print(30*"*")
+            resp = player_won_client(f"{param_side} lose.")
             break
 
         # happens only with real human player in manual mode

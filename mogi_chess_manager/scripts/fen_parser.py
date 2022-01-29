@@ -59,6 +59,21 @@ def fen_diff(fen_prev, fen_next):
 
     return valid
 
+def get_list_fom_fen(fen):
+    out_list = []
+
+    fen_list = fen.split(" ")[0].split("/")
+
+    for i, rank in enumerate(fen_list):
+        for j, char in enumerate(rank):
+            if char.isnumeric():
+                for k in range(0, int(char)):
+                    out_list.append("empty")
+            else:
+                out_list.append(char)
+
+    return out_list
+
 def can_move_low(fen, start, end):
     print(f"Decide if low movement is possible! Start: {start}, end: {end}")
 

@@ -6,8 +6,9 @@ from Chessnut import Game
 from stockfish import Stockfish
 import rospkg
 import time
+import sys
 import fen_parser
-from mogi_chess_msgs.srv import ReadStatus, ReadStatusResponse, MakeMovement, MakeMovementResponse, RobotCommand, RobotStatus, SaveFenSamples, MakeInvalidMovement, MakeInvalidMovementResponse
+from mogi_chess_msgs.srv import ReadStatus, ReadStatusResponse, MakeMovement, MakeMovementResponse, RobotCommand, RobotStatus, SaveFenSamples, MakeInvalidMovement, MakeInvalidMovementResponse, PlayerWon, PlayerWonResponse
 
 def send_robot_command_client(command):
     rospy.wait_for_service('robot_command')
@@ -203,6 +204,111 @@ def serve_read_status(req):
 
     return ReadStatusResponse(response)
 
+def serve_player_won(req):
+    global fen_start, hit_list, stockfish, game_finished
+
+    print(hit_list)
+    print(stockfish.get_fen_position())
+
+    if not game_finished:
+        game_finished = True
+        print(f"Start teardown - {req}")
+        teardown(fen_start, stockfish.get_fen_position())
+
+    else:
+        print(f"Teardown already started - {req}")
+
+    return PlayerWonResponse(True)
+
+def teardown(fen_start, fen_curr):
+    global stopFlag, hit_list, hit_slot
+    print(f"Setting back the scene to: {fen_start}")
+    print(f"Current hit list: {hit_list}")
+    print(f"Current FEN: {fen_curr}")
+
+    start_list = fen_parser.get_list_fom_fen(fen_start)
+    current_list = fen_parser.get_list_fom_fen(fen_curr)
+
+    print(start_list)
+    print(30*"*")
+    print(current_list)
+
+    for i in range(0, len(start_list)):
+        # if correct piece is there go to next one
+        row = 8-int(i/8)
+        col = chr(i%8+97)
+        if start_list[i] == current_list[i]:
+            continue
+        else:
+            if start_list[i] == "empty":
+                # remove current piece
+                robot_req = f"-;rec-r;{col}{row};{hit_slot}"
+                hit_slot += 1
+                hit_list.append(current_list[i])
+                print(robot_req)
+                success = send_robot_command_client(robot_req).success
+                if success:
+                    print("Robot movement was successful")
+                else:
+                    print("Robot movement was NOT successful")
+            elif current_list[i] == "empty":
+                # if available in dropped pieces get it
+                if start_list[i] in hit_list:
+                    slot = hit_list.index(start_list[i])
+                    hit_list[slot] = "XXX"
+                    robot_req = f"-;rec-h;{col}{row};{slot}"
+                    print(robot_req)
+                    success = send_robot_command_client(robot_req).success
+                # if not, find it on the table
+                else:
+                    for j in range(i, len(start_list)):
+                        if start_list[i] == current_list[j]:
+                            j_row = 8-int(j/8)
+                            j_col = chr(j%8+97)
+                            robot_req = f"-;rec-t;{j_col}{j_row};{col}{row}"
+                            print(robot_req)
+                            success = send_robot_command_client(robot_req).success
+                            current_list[j] = "empty"
+                            break
+            else:
+                # remove current piece and check again
+                robot_req = f"-;rec-r;{col}{row};{hit_slot}"
+                hit_slot += 1
+                hit_list.append(current_list[i])
+                print(robot_req)
+                success = send_robot_command_client(robot_req).success
+                if success:
+                    print("Robot movement was successful")
+                else:
+                    print("Robot movement was NOT successful")
+                # if available in dropped pieces get it
+                if start_list[i] in hit_list:
+                    slot = hit_list.index(start_list[i])
+                    hit_list[slot] = "XXX"
+                    robot_req = f"-;rec-h;{col}{row};{slot}"
+                    print(robot_req)
+                    success = send_robot_command_client(robot_req).success
+                # if not, find it on the table
+                else:
+                    for j in range(i, len(start_list)):
+                        if start_list[i] == current_list[j]:
+                            j_row = 8-int(j/8)
+                            j_col = chr(j%8+97)
+                            robot_req = f"-;rec-t;{j_col}{j_row};{col}{row}"
+                            print(robot_req)
+                            success = send_robot_command_client(robot_req).success
+                            current_list[j] = "empty"
+                            break
+
+
+    robot_req = f"-;home"
+    print(robot_req)
+    success = send_robot_command_client(robot_req).success
+
+    time.sleep(1)
+
+    stopFlag = True
+
 valid_step = False
 error_string = "not_initialized"
 status = "init"
@@ -213,6 +319,8 @@ robot_is_moving = True
 robot_moving_timeout = 0
 hit_slot = 0
 hit_list = []
+game_finished = False
+stopFlag = False
 
 # Set up ROS stuff
 status_pub = rospy.Publisher('chess_status', String, queue_size=1)
@@ -221,11 +329,14 @@ fen_pub = rospy.Publisher('chess_manager/fen', String, queue_size=1, latch=True)
 s_read = rospy.Service('read_status', ReadStatus, serve_read_status)
 s_move = rospy.Service('make_movement', MakeMovement, serve_movement)
 s_invalid_move = rospy.Service('make_invalid_movement', MakeInvalidMovement, serve_invalid_movement)
+s_player_won = rospy.Service('player_won', PlayerWon, serve_player_won)
 rospy.init_node('chess_manager')
 
 param_save = rospy.get_param('~save', "false")
 
-fen_start = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#fen_start = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#fen_start = "k7/8/8/8/3q4/8/3P3r/3K3r w - - 0 1"
+fen_start = "7q/1k5P/2r3rP/2P3P1/4pP2/8/3P1P2/3K4 w - - 0 1"
 
 rospack = rospkg.RosPack()
 path = rospack.get_path('mogi_chess_stockfish')
@@ -255,4 +366,9 @@ fen_str = String()
 fen_str.data = current_fen
 fen_pub.publish(fen_str)
 
-rospy.spin()
+#rospy.spin()
+while not rospy.is_shutdown():
+    if stopFlag == True:
+        break
+    rate.sleep()
+

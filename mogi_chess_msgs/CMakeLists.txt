@@ -62,6 +62,7 @@ add_service_files(
   RobotStatus.srv
   SaveFenSamples.srv
   MakeInvalidMovement.srv
+  PlayerWon.srv
 )
 
 ## Generate actions in the 'action' folder
