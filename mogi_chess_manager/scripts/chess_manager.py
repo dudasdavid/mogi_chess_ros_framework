@@ -233,6 +233,8 @@ def teardown(fen_start, fen_curr):
     print(30*"*")
     print(current_list)
 
+    time.sleep(5)
+
     for i in range(0, len(start_list)):
         # if correct piece is there go to next one
         row = 8-int(i/8)
@@ -334,9 +336,9 @@ rospy.init_node('chess_manager')
 
 param_save = rospy.get_param('~save', "false")
 
-#fen_start = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+fen_start = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 #fen_start = "k7/8/8/8/3q4/8/3P3r/3K3r w - - 0 1"
-fen_start = "7q/1k5P/2r3rP/2P3P1/4pP2/8/3P1P2/3K4 w - - 0 1"
+#fen_start = "7q/1k5P/2r3rP/2P3P1/4pP2/8/3P1P2/3K4 w - - 0 1"
 
 rospack = rospkg.RosPack()
 path = rospack.get_path('mogi_chess_stockfish')
@@ -351,7 +353,7 @@ stockfish.set_fen_position(fen_start)
 
 chessgame = Game()
 
-rate = rospy.Rate(1)
+rate = rospy.Rate(10)
 
 
 valid_step = True
