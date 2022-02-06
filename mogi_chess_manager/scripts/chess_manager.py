@@ -113,6 +113,7 @@ def calculate_robot_request(fen, move, side):
     if target_piece != "-":
         print("Hit happened!")
         low_move, orientation = fen_parser.can_move_low(fen, move[:2], move[2:4])
+        low_move = False # TODO: quick and dirty turn off of low movements
         if low_move:
             movement_str = f"{side};xl;{move[2:4]};{hit_slot};{move[:2]};{move[2:4]};{orientation}"
         else:
@@ -123,6 +124,7 @@ def calculate_robot_request(fen, move, side):
 
     # If none of above, it's just a normal step
     low_move, orientation = fen_parser.can_move_low(fen, move[:2], move[2:4])
+    low_move = False  # TODO: quick and dirty turn off of low movements
     if low_move:
         movement_str = f"{side};nl;{move[:2]};{move[2:4]};{orientation}"
     else:
