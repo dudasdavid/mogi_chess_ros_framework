@@ -367,21 +367,21 @@ class MoveGroupPythonInteface(object):
         self.go_and_drop(self.drop_slots[int(hit_id)], orientation = 90)
         self.push_the_clock(side)
         self.go_to_home()
-    elif cmd_list[1] == "rec-r":
+    elif cmd_list[1] == "rec-r": # remove a piece from table
         hit_start = cmd_list[2]
         hit_id = cmd_list[3]
         x = self.columns[hit_start[0]]
         y = self.rows[hit_start[1]]
         self.go_and_grab((x,y))
         self.go_and_drop(self.drop_slots[int(hit_id)], orientation = 90)
-    elif cmd_list[1] == "rec-h":
+    elif cmd_list[1] == "rec-h": # recover a piece from the dropped pieces
         hit_start = cmd_list[2]
         hit_id = cmd_list[3]
         self.go_and_grab(self.drop_slots[int(hit_id)], orientation = 90)
         x = self.columns[hit_start[0]]
         y = self.rows[hit_start[1]]
-        self.go_and_drop((x,y))
-    elif cmd_list[1] == "rec-t":
+        self.go_and_drop((x,y), recovery_height=True)
+    elif cmd_list[1] == "rec-t": # recover a piece from the table
         hit_start = cmd_list[2]
         hit_end = cmd_list[3]
         x = self.columns[hit_start[0]]
@@ -532,7 +532,7 @@ class MoveGroupPythonInteface(object):
     rospy.sleep(self.wait_time)
 
 
-  def go_and_drop(self, xy, low = False, orientation = 45):
+  def go_and_drop(self, xy, low = False, orientation = 45, recovery_height = False):
 
     x = xy[0]
     y = xy[1]
@@ -546,7 +546,10 @@ class MoveGroupPythonInteface(object):
       rospy.sleep(self.wait_time)
 
       # 7) Move down
-      self.go_to_pose_goal_cartesian(x, y, self.z_drop, orientation)
+      if recovery_height:
+        self.go_to_pose_goal_cartesian(x, y, self.z_drop + 0.005, orientation) # TODO: This should be a parameter!
+      else:
+        self.go_to_pose_goal_cartesian(x, y, self.z_drop, orientation)
       rospy.sleep(self.wait_time)
 
     # 8) Open gripper
