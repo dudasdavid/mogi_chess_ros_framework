@@ -110,3 +110,11 @@ roslaunch mogi_chess_hw_interface robot_interface.launch sim:=true
 
 bash autolaunch.bash
 (roslaunch mogi_chess_manager auto_manager.launch)
+
+
+### MoveIt:
+working config:
+- srdfdom 0.6.0
+- geometric_shaped 0.7.3
+- moveit_msgs 0.11.1
+- moveit 1.0.7

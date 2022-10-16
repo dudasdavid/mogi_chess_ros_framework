@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import copy
@@ -874,42 +874,42 @@ class MoveGroupPythonInteface(object):
     return all_close(wpose, current_pose, 0.01)
 
   def do_calibration(self):
-    raw_input("============ Press `Enter` to go A8 (down) ...")
+    input("============ Press `Enter` to go A8 (down) ...")
     self.set_gripper("closed")
     self.go_to_pose_goal(x = self.columns["a"], y = self.rows["8"], z = self.z_touch_table)
-    #raw_input("============ Press `Enter` to go D8 (down) ...")
+    #input("============ Press `Enter` to go D8 (down) ...")
     #self.go_to_pose_goal(x = self.columns["d"], y = self.rows["8"], z = self.z_touch_table)
-    #raw_input("============ Press `Enter` to go E8 (down) ...")
+    #input("============ Press `Enter` to go E8 (down) ...")
     #self.go_to_pose_goal(x = self.columns["e"], y = self.rows["8"], z = self.z_touch_table)
-    #raw_input("============ Press `Enter` to go F8 (down) ...")
+    #input("============ Press `Enter` to go F8 (down) ...")
     #self.go_to_pose_goal(x = self.columns["f"], y = self.rows["8"], z = self.z_touch_table)
-    #raw_input("============ Press `Enter` to go G8 (down) ...")
+    #input("============ Press `Enter` to go G8 (down) ...")
     #self.go_to_pose_goal(x = self.columns["g"], y = self.rows["8"], z = self.z_touch_table)
-    raw_input("============ Press `Enter` to go H8 (down) ...")
+    input("============ Press `Enter` to go H8 (down) ...")
     self.go_to_pose_goal(x = self.columns["h"], y = self.rows["8"], z = self.z_touch_table)
-    raw_input("============ Press `Enter` to go H1 (down) ...")
+    input("============ Press `Enter` to go H1 (down) ...")
     self.go_to_pose_goal(x = self.columns["h"], y = self.rows["1"], z = self.z_touch_table)
-    raw_input("============ Press `Enter` to go A1 (down) ...")
+    input("============ Press `Enter` to go A1 (down) ...")
     self.go_to_pose_goal(x = self.columns["a"], y = self.rows["1"], z = self.z_touch_table)
-    raw_input("============ Press `Enter` to go A8 (down) ...")
+    input("============ Press `Enter` to go A8 (down) ...")
     self.go_to_pose_goal(x = self.columns["a"], y = self.rows["8"], z = self.z_touch_table)
-    raw_input("============ Press `Enter` to go A8 (up) ...")
+    input("============ Press `Enter` to go A8 (up) ...")
     self.go_to_pose_goal(x = self.columns["a"], y = self.rows["8"], z = self.z_high)
-    #raw_input("============ Press `Enter` to go D8 (up) ...")
+    #input("============ Press `Enter` to go D8 (up) ...")
     #self.go_to_pose_goal(x = self.columns["d"], y = self.rows["8"], z = self.z_high)
-    #raw_input("============ Press `Enter` to go E8 (up) ...")
+    #input("============ Press `Enter` to go E8 (up) ...")
     #self.go_to_pose_goal(x = self.columns["e"], y = self.rows["8"], z = self.z_high)
-    #raw_input("============ Press `Enter` to go F8 (up) ...")
+    #input("============ Press `Enter` to go F8 (up) ...")
     #self.go_to_pose_goal(x = self.columns["f"], y = self.rows["8"], z = self.z_high)
-    #raw_input("============ Press `Enter` to go G8 (up) ...")
+    #input("============ Press `Enter` to go G8 (up) ...")
     #self.go_to_pose_goal(x = self.columns["g"], y = self.rows["8"], z = self.z_high)
-    raw_input("============ Press `Enter` to go H8 (up) ...")
+    input("============ Press `Enter` to go H8 (up) ...")
     self.go_to_pose_goal(x = self.columns["h"], y = self.rows["8"], z = self.z_high)
-    raw_input("============ Press `Enter` to go H1 (up) ...")
+    input("============ Press `Enter` to go H1 (up) ...")
     self.go_to_pose_goal(x = self.columns["h"], y = self.rows["1"], z = self.z_high)
-    raw_input("============ Press `Enter` to go A1 (up) ...")
+    input("============ Press `Enter` to go A1 (up) ...")
     self.go_to_pose_goal(x = self.columns["a"], y = self.rows["1"], z = self.z_high)
-    raw_input("============ Press `Enter` to go home ...")
+    input("============ Press `Enter` to go home ...")
     self.go_to_home()
 
   def display_trajectory(self, plan):
@@ -948,14 +948,14 @@ def main():
     moveit_commander.move_group.set_goal_position_tolerance(0.0005)
     moveit_commander.move_group.set_goal_orientation_tolerance(0.001)
     
-    #raw_input("============ Press `Enter` to go home...")
+    #input("============ Press `Enter` to go home...")
     moveit_commander.go_to_home()
     while not rospy.is_shutdown():
       print("============ Select mode:")
       print("============   p: Play")
       print("============   c: Calibration")
       print("============   s: Subscribe to chess_steps topic")
-      ret = raw_input()
+      ret = input()
       if ret in ["p", "c", "s"]:
         break
       else:
@@ -965,17 +965,17 @@ def main():
       moveit_commander.do_calibration()
 
     elif ret == "p":
-      raw_input("============ Press `Enter` to start playing...")
+      input("============ Press `Enter` to start playing...")
       moveit_commander.do_chess_step("d7", "d5")
-      raw_input("============ Press `Enter` for the next step...")
+      input("============ Press `Enter` for the next step...")
       moveit_commander.do_chess_step("e7", "e6")
-      raw_input("============ Press `Enter` for the next step...")
+      input("============ Press `Enter` for the next step...")
       moveit_commander.do_chess_step("g8", "f6")
-      raw_input("============ Press `Enter` for the next step...")
+      input("============ Press `Enter` for the next step...")
       moveit_commander.do_chess_step("f8", "b4")
-      raw_input("============ Press `Enter` for the next step...")
+      input("============ Press `Enter` for the next step...")
       moveit_commander.do_chess_step("e8", "a4")
-      raw_input("============ Press `Enter` for the next step...")
+      input("============ Press `Enter` for the next step...")
       moveit_commander.do_chess_step("b4", "c3", hit = True)
 
     elif ret == "s":
