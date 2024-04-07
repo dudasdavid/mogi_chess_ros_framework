@@ -86,7 +86,7 @@ def update():
             c = plt.imread(BytesIO(b))
             plt.imshow(c)
 
-            fig.canvas.draw()
+            fig.canvas.draw_idle() # fix some funky segfault
 
             text2_string.set(fen)
             time.sleep(0.1)

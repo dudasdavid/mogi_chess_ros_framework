@@ -47,8 +47,12 @@ if ARUCO_DICT.get(selected_type, None) is None:
     sys.exit(0)
 # load the ArUCo dictionary and grab the ArUCo parameters
 print("[INFO] detecting '{}' tags...".format(selected_type))
-arucoDict = cv2.aruco.Dictionary_get(ARUCO_DICT[selected_type])
-arucoParams = cv2.aruco.DetectorParameters_create()
+#arucoDict = cv2.aruco.Dictionary_get(ARUCO_DICT[selected_type])
+#arucoParams = cv2.aruco.DetectorParameters_create()
+# API changed for 4.7.x
+arucoDict = cv2.aruco.getPredefinedDictionary(ARUCO_DICT[selected_type])
+arucoParams =  cv2.aruco.DetectorParameters()
+detector = cv2.aruco.ArucoDetector(arucoDict, arucoParams)
 
 class BufferQueue(Queue):
     """Slight modification of the standard Queue that discards the oldest item
@@ -103,6 +107,8 @@ class cvThread(threading.Thread):
             result = self.addSmallPictures(self.image, [detection, rejected, warped, self.depth, warped_depth])
             cv2.imshow("frame", result)
 
+            cv2.imshow("detection", detection)
+
             # Check for 'q' key to exit
             k = cv2.waitKey(6) & 0xFF
             if k in [27, ord('q')]:
@@ -120,7 +126,7 @@ class cvThread(threading.Thread):
         rows,cols = img.shape[:2]
 
         # detect ArUco markers in the input frame
-        (corners, ids, rejected) = cv2.aruco.detectMarkers(img, arucoDict, parameters=arucoParams)
+        (corners, ids, rejected) = detector.detectMarkers(img)
 
         cv2.aruco.drawDetectedMarkers(rejected_frame, rejected)
 
