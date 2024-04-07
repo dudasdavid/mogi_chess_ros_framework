@@ -20,6 +20,8 @@ roslaunch ur_robot_driver ur3e_bringup.launch robot_ip:=10.0.0.244 limited:=true
 roslaunch rh_p12_rn_a_tools bringup.launch
 roslaunch ur3_e_moveit_config ur3_e_moveit_planning_execution.launch limited:=true
 
+roslaunch ur5e_moveit_config ur5e_moveit_planning_execution.launch limited:=true
+
 ## 2. Start HW interface, chess manager and player nodes
 ### Gazebo:
 roslaunch mogi_chess_manager manager.launch sim:=true
