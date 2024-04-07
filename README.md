@@ -6,6 +6,12 @@
 - moveit_msgs 0.11.1
 - moveit 1.0.7
 
+## Dependencies:
+https://github.com/dudasdavid/Universal_Robots_ROS_Driver/tree/ur3e-tool
+https://github.com/dudasdavid/universal_robot/tree/chess-detector
+https://github.com/dudasdavid/RH-P12-RN-A/tree/ur3e-gripper
+https://github.com/dudasdavid/mogi_chess_ros_framework
+
 # How to use?
 
 ## 0. Make sure every gazebo path is correct for the simulation!
