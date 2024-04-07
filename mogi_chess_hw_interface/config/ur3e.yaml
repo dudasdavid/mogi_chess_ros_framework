@@ -7,5 +7,9 @@ board_dimensions:
   x_increment: 0.0375
   y_increment: 0.0375
 
+clock_locations:
+  x_pos: 0.260
+  y_pos: 0.110
+
 specific_joint_angles:
   home: "1 1 1 1 1 1"

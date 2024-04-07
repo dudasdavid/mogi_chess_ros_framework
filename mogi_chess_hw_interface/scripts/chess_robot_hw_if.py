@@ -226,10 +226,10 @@ class MoveGroupPythonInteface(object):
 
     self.clock_z_up = self.z_table_offset + 0.07
     self.clock_z_down = self.z_table_offset + 0.04
-    self.clock_x_b = -0.150
-    y_clock_black_offset = 0.140
+    self.clock_x_b = robot_params['clock_locations']['x_pos']
+    y_clock_black_offset = robot_params['clock_locations']['y_pos']
     self.clock_y_b = y_offset + y_clock_black_offset #0.300
-    self.clock_x_w = self.clock_x_b
+    self.clock_x_w = self.clock_x_b # same x location for white and black side
     y_clock_white_offset = y_clock_black_offset + 0.080 # black and white buttons are 8cm apart
     self.clock_y_w = y_offset + y_clock_white_offset #0.380
 
