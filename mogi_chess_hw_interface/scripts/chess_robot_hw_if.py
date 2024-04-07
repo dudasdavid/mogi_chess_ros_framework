@@ -225,13 +225,15 @@ class MoveGroupPythonInteface(object):
     self.robot_is_moving = False
 
     self.clock_z_up = self.z_table_offset + 0.07
-    self.clock_z_down = self.z_table_offset + 0.04
+    self.clock_z_down = self.z_table_offset + 0.036
     self.clock_x_b = robot_params['clock_locations']['x_pos']
     y_clock_black_offset = robot_params['clock_locations']['y_pos']
     self.clock_y_b = y_offset + y_clock_black_offset #0.300
     self.clock_x_w = self.clock_x_b # same x location for white and black side
     y_clock_white_offset = y_clock_black_offset + 0.080 # black and white buttons are 8cm apart
     self.clock_y_w = y_offset + y_clock_white_offset #0.380
+
+    self.default_pan_angle = robot_params['robot_base']['default_pan_angle']
 
   def serve_robot_status(self, req):
       return RobotStatusResponse(self.robot_is_moving)
@@ -686,7 +688,7 @@ class MoveGroupPythonInteface(object):
     ## thing we want to do is move it to a slightly better configuration.
     # We can get the joint values from the group and adjust some of the values:
     joint_goal = self.move_group.get_current_joint_values()
-    joint_goal[0] = -3.1415
+    joint_goal[0] = self.default_pan_angle
     joint_goal[1] = -1.5708
     joint_goal[2] = -1.0472
     joint_goal[3] = -1.0472
@@ -711,7 +713,7 @@ class MoveGroupPythonInteface(object):
 
     # initial pose, same as home
     joint_goal = self.move_group.get_current_joint_values()
-    joint_goal[0] = -1.5708
+    joint_goal[0] = self.default_pan_angle
     joint_goal[1] = -1.5708
     joint_goal[2] = -1.0472
     joint_goal[3] = -1.0472
@@ -724,7 +726,7 @@ class MoveGroupPythonInteface(object):
 
     # go to one side
     joint_goal = self.move_group.get_current_joint_values()
-    joint_goal[0] = -1.5708
+    joint_goal[0] = self.default_pan_angle
     joint_goal[1] = -1.5708
     joint_goal[2] = -1.0472
     joint_goal[3] = -1.0472
@@ -737,7 +739,7 @@ class MoveGroupPythonInteface(object):
 
     # go to other
     joint_goal = self.move_group.get_current_joint_values()
-    joint_goal[0] = -1.5708
+    joint_goal[0] = self.default_pan_angle
     joint_goal[1] = -1.5708
     joint_goal[2] = -1.0472
     joint_goal[3] = -1.0472
@@ -750,7 +752,7 @@ class MoveGroupPythonInteface(object):
 
     # final pose, same as home
     joint_goal = self.move_group.get_current_joint_values()
-    joint_goal[0] = -1.5708
+    joint_goal[0] = self.default_pan_angle
     joint_goal[1] = -1.5708
     joint_goal[2] = -1.0472
     joint_goal[3] = -1.0472

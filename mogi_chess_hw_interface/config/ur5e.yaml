@@ -8,8 +8,11 @@ board_dimensions:
   y_increment: 0.0375
 
 clock_locations:
-  x_pos: -0.150
-  y_pos: 0.140
+  x_pos: 0.370
+  y_pos: 0.110
+
+robot_base:
+  default_pan_angle: -3.1415
 
 specific_joint_angles:
   home: "1 1 1 1 1 1"

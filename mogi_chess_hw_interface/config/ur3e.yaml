@@ -11,5 +11,8 @@ clock_locations:
   x_pos: 0.260
   y_pos: 0.110
 
+robot_base:
+  default_pan_angle: -1.5708
+
 specific_joint_angles:
   home: "1 1 1 1 1 1"
