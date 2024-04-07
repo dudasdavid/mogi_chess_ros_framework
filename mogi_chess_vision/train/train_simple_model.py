@@ -180,7 +180,7 @@ train_generator = generator(train_samples, batch_size=batch_size)
 validation_generator = generator(validation_samples, batch_size=batch_size)
 
 # hyperparameters
-EPOCHS  = 12
+EPOCHS  = 25
 INIT_LR = 0.01
 DECAY   = INIT_LR / EPOCHS
 

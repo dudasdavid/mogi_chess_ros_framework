@@ -10,7 +10,8 @@
 https://github.com/dudasdavid/Universal_Robots_ROS_Driver/tree/ur3e-tool
 https://github.com/dudasdavid/universal_robot/tree/chess-detector
 https://github.com/dudasdavid/RH-P12-RN-A/tree/ur3e-gripper
-https://github.com/dudasdavid/mogi_chess_ros_framework
+https://github.com/dudasdavid/mogi_chess_ros_framework/tree/main
+https://github.com/dudasdavid/usb_cam/tree/develop
 
 # How to use?
 
@@ -62,7 +63,8 @@ roslaunch mogi_chess_manager human_player.launch side:=w
 ```
 ## Continue only if everything is working fine including chess clock position and hit pieces drop location!!!
 
-## 3. Start vision package and save samples
+## 3. Prepare learning set and teach the neural network, if network is ready go to 4.1
+### Start vision package and save samples
 roslaunch mogi_chess_vision split_and_save.launch
 roslaunch mogi_chess_manager manager.launch save:=true
 roslaunch mogi_chess_manager stockfish_player.launch side:=b
@@ -75,19 +77,19 @@ roslaunch mogi_chess_manager stockfish_player.launch side:=b
 roslaunch mogi_chess_manager stockfish_player.launch side:=w
 
 
-# Run the piece recognition CNN
+### Run the piece recognition CNN
 roslaunch mogi_chess_vision split_squares.launch
 
-## Train:
+### Train:
 python3.8 train.py -s true
 
-## Clock:
-david@david-ros:~$ sudo usermod -a -G tty david
-david@david-ros:~$ sudo usermod -a -G dialout david
+### 4.0. Setup the clock serial port:
+microlab@microlab:~$ sudo usermod -a -G tty microlab
+microlab@microlab:~$ sudo usermod -a -G dialout microlab
+sudo chmod 666 /dev/ttyACM0
 
 
-
-## 4. start manual game and optical tracker:
+## 4.1. start manual game and optical tracker:
 ### Real robot
 BRINGUP
 roslaunch mogi_chess_manager manager.launch
