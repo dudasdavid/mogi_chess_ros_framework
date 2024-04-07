@@ -3,7 +3,7 @@
 <launch>
 
   <arg name="sim" default="false"/>
-  <arg name="config" default="ur3e.yaml"/>
+  <arg name="config" default="ur5e.yaml"/>
   <arg name="save" default="false"/>
 
   <!-- Launch the HW interface -->

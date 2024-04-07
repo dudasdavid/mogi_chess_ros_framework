@@ -3,7 +3,7 @@
 <launch>
 
   <arg name="sim" default="false"/>
-  <arg name="config" default="ur3e.yaml"/>
+  <arg name="config" default="ur5e.yaml"/>
 
   <node name="mogi_chess_robot_hw" pkg="mogi_chess_hw_interface" type="chess_robot_hw_if.py" output ="screen">
     <rosparam subst_value="true">

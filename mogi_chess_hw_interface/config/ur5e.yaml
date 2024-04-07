@@ -1,7 +1,7 @@
 robot_board_offsets:
-  x: 0
-  y: 0.490
-  z: 0.095
+  x: 0.115
+  y: 0.352
+  z: 0.243
 
 board_dimensions:
   x_increment: 0.0375

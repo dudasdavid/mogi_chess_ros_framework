@@ -58,7 +58,7 @@ class MoveGroupPythonInteface(object):
     else:
         self.simulation = False
 
-    param_config = rospy.get_param('~config', "ur3e.yaml")
+    param_config = rospy.get_param('~config', "ur5e.yaml")
 
     rospack = rospkg.RosPack()
     path = rospack.get_path('mogi_chess_hw_interface')
@@ -225,11 +225,11 @@ class MoveGroupPythonInteface(object):
     self.robot_is_moving = False
 
     self.clock_z_up = self.z_table_offset + 0.07
-    self.clock_z_down = self.z_table_offset + 0.038
-    self.clock_x_b = 0.260
-    y_clock_black_offset = 0.110
+    self.clock_z_down = self.z_table_offset + 0.04
+    self.clock_x_b = -0.150
+    y_clock_black_offset = 0.140
     self.clock_y_b = y_offset + y_clock_black_offset #0.300
-    self.clock_x_w = 0.260
+    self.clock_x_w = self.clock_x_b
     y_clock_white_offset = y_clock_black_offset + 0.080 # black and white buttons are 8cm apart
     self.clock_y_w = y_offset + y_clock_white_offset #0.380
 
@@ -686,7 +686,7 @@ class MoveGroupPythonInteface(object):
     ## thing we want to do is move it to a slightly better configuration.
     # We can get the joint values from the group and adjust some of the values:
     joint_goal = self.move_group.get_current_joint_values()
-    joint_goal[0] = -1.5708
+    joint_goal[0] = -3.1415
     joint_goal[1] = -1.5708
     joint_goal[2] = -1.0472
     joint_goal[3] = -1.0472
