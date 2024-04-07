@@ -65,51 +65,57 @@ roslaunch mogi_chess_manager human_player.launch side:=w
 
 ## 3. Prepare learning set and teach the neural network, if network is ready go to 4.1
 ### Start vision package and save samples
+```bash
 roslaunch mogi_chess_vision split_and_save.launch
 roslaunch mogi_chess_manager manager.launch save:=true
 roslaunch mogi_chess_manager stockfish_player.launch side:=b
 roslaunch mogi_chess_manager stockfish_player.launch side:=w
+```
 
 ### Gazebo:
+```bash
 roslaunch mogi_chess_manager manager.launch sim:=true save:=true
 roslaunch mogi_chess_vision split_and_save.launch sim:=true
 roslaunch mogi_chess_manager stockfish_player.launch side:=b
 roslaunch mogi_chess_manager stockfish_player.launch side:=w
+```
 
-
-### Run the piece recognition CNN
-roslaunch mogi_chess_vision split_squares.launch
-
-### Train:
-python3.8 train.py -s true
+### Train the model:
+```bash
+python3.8 train_simple_model.py -s true
+```
+Do not use train.py because that was a not working dead end with CNN detection for every piece
+Simple model is just distinguishing black/white/empty fields
 
 ### 4.0. Setup the clock serial port:
+```bash
 microlab@microlab:~$ sudo usermod -a -G tty microlab
 microlab@microlab:~$ sudo usermod -a -G dialout microlab
 sudo chmod 666 /dev/ttyACM0
-
+```
 
 ## 4.1. start manual game and optical tracker:
 ### Real robot
-BRINGUP
+```bash
 roslaunch mogi_chess_manager manager.launch
 roslaunch mogi_chess_vision split_and_track.launch
 roslaunch mogi_chess_manager manual_player.launch
 roslaunch mogi_chess_manager stockfish_player.launch side:=b level:=20
-
+```
 ### Gazebo
-BRINGUP
+```bash
 roslaunch mogi_chess_manager manager.launch sim:=true
 roslaunch mogi_chess_vision split_and_track.launch sim:=true
 rosrun mogi_chess_gazebo virtual_chess_clock.py
 roslaunch mogi_chess_manager manual_player.launch
 roslaunch mogi_chess_manager stockfish_player.launch side:=b
-
-move the pieces in Gazebo
+```
+and move the pieces in Gazebo
 
 # save additional extra samples:
+```bash
 roslaunch mogi_chess_vision save_snapshots.launch
-
+```
 
 # Useful links:
 http://chess.fortherapy.co.uk/home/chess-piece-identification-technology/
