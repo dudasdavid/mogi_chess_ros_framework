@@ -23,7 +23,7 @@ export GAZEBO_MODEL_PATH=~/catkin_ws/src/mogi_chess_ros_framework/mogi_chess_gaz
 ## 1. Start low level robot nodes:
 ### Bringup in Gazebo
 ```bash
-roslaunch ur_e_gazebo ur3e.launch limited:=true world_file:='$(find mogi_chess_gazebo)/world/chessboard.world' z:=1.02
+roslaunch ur_gazebo ur3e_bringup.launch limited:=true gazebo_world:='$(find mogi_chess_gazebo)/world/chessboard.world' spawn_z:=1.02
 roslaunch ur3_e_moveit_config ur3_e_moveit_planning_execution.launch sim:=true limited:=true
 ```
 ### Bringup real robot
